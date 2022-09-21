@@ -7,13 +7,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Comments")
 public class Comments {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "comment_seq")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "cmnt_seq")
+	@SequenceGenerator(name = "cmnt_seq", sequenceName = "cmnt_seq", initialValue = 1, allocationSize = 1)
 	private int id;
 	private String name;
 	private String email;
@@ -21,7 +23,7 @@ public class Comments {
 	private Date createdAt;
 	private Date updatedAt;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Posts posts;
 
 	public Comments(int id, String name, String email, String comment, Date createdAt, Date updatedAt, Posts posts) {
@@ -95,7 +97,5 @@ public class Comments {
 	public void setPosts(Posts posts) {
 		this.posts = posts;
 	}
-
-	
 
 }

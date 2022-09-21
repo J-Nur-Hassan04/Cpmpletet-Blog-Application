@@ -6,8 +6,8 @@
 </head>
 <body>
 	<form style="text-align: center;" action="#" th:action ="@{/posts/{id}/{details}/addcomment/savecomment(id=${postId},details=${title})}" method="post">
-		<h1 style="margin-top: 4%;">Write your comment</h1>
-		<input style="width: 60%; height: 3em;" type="text" name="name"
+		<h1 style="margin-top: 4%;">update your comment</h1>
+		<input style="width: 60%; height: 3em;" th:value="${comment.getName()}" type="text"  name="name"
 			placeholder="Enter Your Name" required="required"><br> 
 		<input
 			style="width: 60%; height: 3em; margin: 2px" type="email"

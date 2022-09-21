@@ -9,9 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,7 +23,7 @@ public class Tags {
 	private Date updatedAt;
 	private String name;
 	
-	@ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "tags")
 	List<Posts> post = new ArrayList<>();
 
 	public Tags(int id, Date createdAt, Date updatedAt, String name, List<Posts> post) {

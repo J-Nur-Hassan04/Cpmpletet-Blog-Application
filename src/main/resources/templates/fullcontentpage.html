@@ -20,7 +20,7 @@ textarea {
 }
 
 button {
-	font-size: 30px;
+	font-size: 20px;
 	width: 60%;
 	background-color: blue;
 	padding: 0.5em;
@@ -76,14 +76,15 @@ p {
 						th:action="@{/posts/{id}/{details}/update(id=${post.getId()},details=${post.getTitle()})}">
 						<input type="hidden" name="title" th:value="${post.getTitle()}">
 						<input type="hidden" name="content"
-							th:value="${post.getContent()}">
-						<input type="hidden" name="author" th:value="${post.getAuthor()}">
-						<input type="hidden" name="previoustags"
+							th:value="${post.getContent()}"> <input type="hidden"
+							name="author" th:value="${post.getAuthor()}"> <input
+							type="hidden" name="previoustags"
 							th:value="${post.getTagsInString()}">
 						<button type="submit">update</button>
 					</form>
-					<form action="#" th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}">
-					<button type="submit">delete</button>
+					<form action="#"
+						th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}">
+						<button type="submit">delete</button>
 					</form>
 
 				</div>
@@ -97,12 +98,18 @@ p {
 							<td>
 								<h4 th:text="${comment.getName()}"></h4>
 								<p th:text="${comment.getComment()}"></p>
+								<form action="#" th:action = "@{/posts/{id}/{details}/updatecomment(id = ${comment.getId()},details=${post.getTitle})}">
+									<button type="submit">update</button>
+								</form>
+								<form action="">
+									<button type="submit">update</button>
+								</form>
 							</td>
 						</tr>
 					</table>
-				</div> <a
+				</div> <!-- <a
 				th:href="@{/posts/{id}/{details}/addcomment(id=${post.getId()},details=${post.getTitle()})}">Add
-					Comment</a>
+					Comment</a> -->
 			</td>
 
 		</tr>
