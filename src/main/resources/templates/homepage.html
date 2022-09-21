@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<form action="newpost">
+		<button type="submit">write post</button>
+	</form>
+
+	<div>
+		<table style="max-width: 68em; margin: auto;">
+			<tr th:each="post : ${postList}">
+				<td style="border: 2px solid black; margin: 5px;">
+					<h1 th:text="${post.getTitle()}"></h1>
+					<p th:text="${post.getExcerpt()}"></p>
+					<p th:text="${post.getAuthor()}"></p>
+					<p th:text="${post.getPublishedAt()}"></p>
+					<p th:text="${post.getCreatedAt()}"></p>
+					<a th:href="@{/posts/{id}/{details}(id=${post.getId()},details=${post.getTitle()})}">read more</a>
+				</td>
+
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

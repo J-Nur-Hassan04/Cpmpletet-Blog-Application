@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<table style="max-width: 68em; margin: auto;">
+		<tr>
+			<td style="border: 2px solid black; padding: 15px;">
+				<h1 th:text="${post.getTitle()}"></h1> <!-- <p th:text="${post.getContent()}"></p> -->
+				<p th:utext="${#strings.replace(post.getContent(),'&#10;','<br>')}"></p>
+				<p th:text="${post.getAuthor()}"></p>
+				<p th:text="${post.getPublishedAt()}"></p>
+				<p th:text="${post.getCreatedAt()}"></p> <label for="tags">Tags
+					: </label>
+				<p style="margin: 1px" id="tags" th:each="tag :${post.getTags()}"
+					th:text="${tag.getName()}"></p>
+				<br>
+
+				<h2>Comments</h2>
+
+				<table>
+					<tr th:each="comment : ${post.getComments()}">
+						<td>
+							<h4 th:text="${comment.getName()}"></h4>
+							<p th:text="${comment.getComment()}"></p>
+						</td>
+					</tr>
+				</table>
+			</td>
+
+		</tr>
+	</table>
+</body>
+</html>
