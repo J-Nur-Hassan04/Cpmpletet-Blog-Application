@@ -145,6 +145,15 @@ public class Posts {
 	public List<Comments> getComments() {
 		return comments;
 	}
+	
+	public String getTagsInString(){
+		String tagStr = "";
+		for(Tags tag : tags)
+		{
+			tagStr+=tag.getName()+",";
+		}
+		return tagStr;	
+	}
 
 	public void setComments(List<Comments> comments) {
 		this.comments = comments;

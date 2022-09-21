@@ -1,36 +1,128 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+
 <body>
+	<style>
+input {
+	width: 60%;
+	height: 3em;
+	margin: 2px;
+}
+
+textarea {
+	width: 60%;
+	height: 8vw;
+}
+
+button {
+	font-size: 30px;
+	width: 60%;
+	background-color: blue;
+	padding: 0.5em;
+}
+
+h1 {
+	margin-top: 4%;
+}
+
+td {
+	border: 2px solid black;
+	padding: 15px;
+}
+
+p {
+	margin: 1px;
+}
+
+.tags {
+	display: flex;
+}
+
+.tags p {
+	margin: 3px;
+}
+
+.comments td {
+	border: none;
+}
+
+.comments p {
+	margin-bottom: 0;
+}
+</style>
 	<table style="max-width: 68em; margin: auto;">
 		<tr>
-			<td style="border: 2px solid black; padding: 15px;">
-				<h1 th:text="${post.getTitle()}"></h1> <!-- <p th:text="${post.getContent()}"></p> -->
+			<td>
+				<h1 th:text="${post.getTitle()}"></h1>
 				<p th:utext="${#strings.replace(post.getContent(),'&#10;','<br>')}"></p>
 				<p th:text="${post.getAuthor()}"></p>
-				<p th:text="${post.getPublishedAt()}"></p>
-				<p th:text="${post.getCreatedAt()}"></p> <label for="tags">Tags
-					: </label>
-				<p style="margin: 1px" id="tags" th:each="tag :${post.getTags()}"
-					th:text="${tag.getName()}"></p>
-				<br>
+				<p th:text=" 'Published At: ' +${post.getPublishedAt()}"></p>
+				<p th:text=" 'Updated at: '+${post.getUpdatedAt()}"></p> <label
+				for="tags">Tags : </label>
+				<div class="tags">
+					<p id="tags" th:each="tag :${post.getTags()}"
+						th:text="${tag.getName()}"></p>
+					<br>
+				</div>
+
+
+				<div>
+					<form action="#"
+						th:action="@{/posts/{id}/{details}/update(id=${post.getId()},details=${post.getTitle()})}">
+						<input type="hidden" name="title" th:value="${post.getTitle()}">
+						<input type="hidden" name="content"
+							th:value="${post.getContent()}">
+						<input type="hidden" name="author" th:value="${post.getAuthor()}">
+						<input type="hidden" name="previoustags"
+							th:value="${post.getTagsInString()}">
+						<button type="submit">update</button>
+					</form>
+					<form action="#" th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}">
+					<button type="submit">delete</button>
+					</form>
+
+				</div>
+
+
 
 				<h2>Comments</h2>
-
-				<table>
-					<tr th:each="comment : ${post.getComments()}">
-						<td>
-							<h4 th:text="${comment.getName()}"></h4>
-							<p th:text="${comment.getComment()}"></p>
-						</td>
-					</tr>
-				</table>
+				<div class="comments">
+					<table>
+						<tr th:each="comment : ${post.getComments()}">
+							<td>
+								<h4 th:text="${comment.getName()}"></h4>
+								<p th:text="${comment.getComment()}"></p>
+							</td>
+						</tr>
+					</table>
+				</div> <a
+				th:href="@{/posts/{id}/{details}/addcomment(id=${post.getId()},details=${post.getTitle()})}">Add
+					Comment</a>
 			</td>
 
 		</tr>
 	</table>
+	<div>
+		<form style="text-align: center;" action="#"
+			th:action="@{/posts/{id}/{details}/addcomment/savecomment(id=${post.getId()},details=${post.getTitle()})}"
+			method="post">
+			<h1>Write your comment</h1>
+			<input type="text" name="name" placeholder="Enter Your Name"
+				required="required"><br> <input type="email"
+				name="email" placeholder="Enter email : example@gmail.com"
+				required="required"><br>
+			<textarea name="comment" rows="15" cols="28"
+				placeholder="write your comment here" required="required"></textarea>
+			<button type="submit">submit</button>
+
+
+		</form>
+	</div>
 </body>
+
 </html>

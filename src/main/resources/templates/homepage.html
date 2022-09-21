@@ -5,22 +5,55 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<style>
+table {
+	max-width: 68em;
+	margin: auto;
+}
+
+td {
+	padding: 10px;
+	border: 2px solid black;
+	margin: 5px;
+	border: 2px solid black;
+}
+
+.tags {
+	display: flex;
+}
+
+.tags p {
+	margin: 3px;
+}
+
+a {
+	margin-left: 60em;
+}
+
+</style>
 	<form action="newpost">
 		<button type="submit">write post</button>
 	</form>
+	<a th:href ="@{posts/drafts}">See drafts</a>
 
 	<div>
-		<table style="max-width: 68em; margin: auto;">
+		<table>
 			<tr th:each="post : ${postList}">
-				<td style="border: 2px solid black; margin: 5px;">
+				<td th:if ="${post.isPublished()}">
 					<h1 th:text="${post.getTitle()}"></h1>
 					<p th:text="${post.getExcerpt()}"></p>
 					<p th:text="${post.getAuthor()}"></p>
 					<p th:text="${post.getPublishedAt()}"></p>
 					<p th:text="${post.getCreatedAt()}"></p>
-					<a th:href="@{/posts/{id}/{details}(id=${post.getId()},details=${post.getTitle()})}">read more</a>
+					<div class="tags">
+						<p>Tags :</p>
+						<p id="tags" th:each="tag :${post.getTags()}"
+							th:text="${tag.getName()}"></p>
+						<br>
+					</div> <a
+					th:href="@{/posts/{id}/{details}(id=${post.getId()},details=${post.getTitle()})}">read
+						more</a>
 				</td>
-
 			</tr>
 		</table>
 	</div>

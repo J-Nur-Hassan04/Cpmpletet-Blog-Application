@@ -33,4 +33,13 @@ public class HomeControler {
 		mv.setViewName("fullcontentpage");
 		return mv;
 	}
+	
+	@RequestMapping("/posts/drafts")
+	public ModelAndView getDrafts()
+	{
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("postList",postRepo.findAll());
+		mv.setViewName("draftspage");
+		return mv;
+	}
 }
