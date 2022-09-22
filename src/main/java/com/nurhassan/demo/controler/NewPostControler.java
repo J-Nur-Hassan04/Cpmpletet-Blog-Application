@@ -24,7 +24,7 @@ public class NewPostControler {
 	@Autowired
 	TagsRepo tagRepo;
 
-	@RequestMapping("/newpost")
+	@RequestMapping(value = {"/newpost","/posts/newpost"})
 	public ModelAndView getNewBlogForm() {
 
 		ModelAndView mv = new ModelAndView();
@@ -132,5 +132,4 @@ public class NewPostControler {
 		mv.setViewName("redirect:/");
 		return mv;
 	}
-
 }

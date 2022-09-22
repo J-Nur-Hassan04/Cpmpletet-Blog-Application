@@ -26,20 +26,78 @@ td {
 	margin: 3px;
 }
 
-a {
-	margin-left: 60em;
+.content a
+{
+margin: 60em;
+}
+.dropandwritebtn {
+	background-color: #04AA6D;
+	color: white;
+	padding: 16px;
+	font-size: 16px;
+	border: none;
+	margin-bottom: 10px;
+}
+.dropandwritebtn a
+{
+margin: 0;
 }
 
-</style>
-	<form action="newpost">
-		<button type="submit">write post</button>
-	</form>
-	<a th:href ="@{posts/drafts}">See drafts</a>
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
 
-	<div>
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.dropdown:hover .dropbtn {
+	background-color: #3e8e41;
+}
+</style>
+	<form action="newpost" method="post">
+		<button class="dropandwritebtn" type="submit">write post</button>
+	</form>
+	
+
+
+	<div class="filter">
+		<div class="dropdown">
+			<button class="dropandwritebtn">Dropdown</button>
+			<div class="dropdown-content">
+				<a href="#"th:href="@{/posts/drafts}">See drafts</a> 
+				<a th:href="@{/posts/sorted}">sort by published date</a> 
+				<a th:href="@{/posts/tags}">Filter By Tags</a>
+				<a th:href="@{/posts/authors}">Filter By Author</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="content">
 		<table>
 			<tr th:each="post : ${postList}">
-				<td th:if ="${post.isPublished()}">
+				<td th:if="${post.isPublished()}">
 					<h1 th:text="${post.getTitle()}"></h1>
 					<p th:text="${post.getExcerpt()}"></p>
 					<p th:text="${post.getAuthor()}"></p>
