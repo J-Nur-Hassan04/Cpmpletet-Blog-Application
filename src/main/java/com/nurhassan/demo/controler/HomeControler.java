@@ -1,14 +1,15 @@
 package com.nurhassan.demo.controler;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Posts;
@@ -30,6 +31,36 @@ public class HomeControler {
 
 		mv.addObject("postList", postRepo.findAll());
 		mv.setViewName("homepage");
+
+		return mv;
+	}
+
+	@RequestMapping("/posts/searchedposts")
+	public ModelAndView getSearchedPosts(@RequestParam("searchArg") String searchArg) {
+
+		return getSearchedPostsByAny(searchArg);
+	}
+
+	public ModelAndView getSearchedPostsByAny(String searchArg) {
+		ModelAndView mv = new ModelAndView();
+		Set<Posts> tagNamedPosts = new HashSet<>();
+		searchArg = searchArg.toLowerCase();
+
+		List<Posts> posts = postRepo.findAll();
+		for (Posts post : posts) {
+			List<Tags> tags = post.getTags();
+			for (Tags tag : tags) {
+				if (tag.getName().toLowerCase().contains(searchArg) || post.getTitle().toLowerCase().contains(searchArg)
+						|| post.getAuthor().toLowerCase().contains(searchArg)
+						|| post.getContent().toLowerCase().contains(searchArg)) {
+					tagNamedPosts.add(post);
+				}
+			}
+		}
+
+		mv.addObject("postList", tagNamedPosts);
+		mv.setViewName("homepage");
+
 		return mv;
 	}
 
@@ -37,16 +68,20 @@ public class HomeControler {
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
 		ModelAndView mv = new ModelAndView();
 		Posts post = postRepo.findById(id).orElse(null);
+
 		mv.addObject("post", post);
 		mv.setViewName("fullcontentpage");
+
 		return mv;
 	}
 
 	@RequestMapping("/posts/drafts")
 	public ModelAndView getDrafts() {
 		ModelAndView mv = new ModelAndView();
+
 		mv.addObject("postList", postRepo.findAll());
 		mv.setViewName("draftspage");
+
 		return mv;
 	}
 
@@ -56,55 +91,58 @@ public class HomeControler {
 
 		mv.addObject("postList", postRepo.findAllByOrderByPublishedAtDesc());
 		mv.setViewName("homepage");
+
 		return mv;
 	}
 
 	@RequestMapping("/posts/authors")
 	public ModelAndView getAuthors() {
 		ModelAndView mv = new ModelAndView();
+
 		mv.addObject("authorList", postRepo.getAllAuthors());
 		mv.setViewName("authors");
+
 		return mv;
 	}
 
 	@RequestMapping("/posts/author/{authorname}")
 	public ModelAndView getPostsOfAuthor(@PathVariable("authorname") String authorName) {
 		ModelAndView mv = new ModelAndView();
+
 		mv.addObject("postList", postRepo.findAllByAuthor(authorName));
 		mv.setViewName("homepage");
+
 		return mv;
 	}
 
 	@RequestMapping("/posts/tags")
 	public ModelAndView getTags() {
 		ModelAndView mv = new ModelAndView();
+
 		mv.addObject("tagsList", tagRepo.getAllTags());
 		mv.setViewName("tags");
+
 		return mv;
 	}
 
 	@RequestMapping("/posts/tag/{tagname}")
 	public ModelAndView getTagedPosts(@PathVariable("tagname") String tagName) {
 		ModelAndView mv = new ModelAndView();
-
 		List<Posts> tagNamedPosts = new ArrayList<>();
-		
+
 		List<Posts> posts = postRepo.findAll();
-		for(Posts post : posts)
-		{
+		for (Posts post : posts) {
 			List<Tags> tags = post.getTags();
-			for(Tags tag : tags)
-			{
-				if(tag.getName().contains(tagName))
-				{
+			for (Tags tag : tags) {
+				if (tag.getName().contains(tagName)) {
 					tagNamedPosts.add(post);
 				}
 			}
 		}
-		mv.addObject("postList", tagNamedPosts);
 
+		mv.addObject("postList", tagNamedPosts);
 		mv.setViewName("homepage");
+
 		return mv;
 	}
-
 }

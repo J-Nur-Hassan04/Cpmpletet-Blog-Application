@@ -11,6 +11,14 @@ table {
 	margin: auto;
 }
 
+button {
+	font-size: 20px;
+	width: 20%;
+	background-color: blue;
+	width:100px;
+	padding: 0.2em;
+}
+
 td {
 	padding: 10px;
 	border: 2px solid black;
@@ -33,11 +41,11 @@ a {
 	<div>
 		<table>
 			<tr th:each="post : ${postList}">
-				<td th:if ="${not post.isPublished()}">
+				<td th:if="${not post.isPublished()}">
 					<h1 th:text="${post.getTitle()}"></h1>
 					<p th:utext="${#strings.replace(post.getContent(),'&#10;','<br>')}"></p>
 					<p th:text="${post.getAuthor()}"></p>
-					<p th:text=" 'Published '+${post.getPublishedAt()}"></p>
+					<p th:text=" 'Created At :  '+${post.getCreatedAt()}"></p>
 					<p th:text=" 'Updated : ' +${post.getUpdatedAt()}"></p>
 					<div class="tags">
 						<p>Tags :</p>
@@ -46,18 +54,18 @@ a {
 						<br>
 					</div>
 					<div>
-					<form action="#"
-						th:action="@{/posts/{id}/{details}/update(id=${post.getId()},details=${post.getTitle()})}">
-						<input type="hidden" name="title" th:value="${post.getTitle()}">
-						<input type="hidden" name="content"
-							th:value="${post.getContent()}">
-						<input type="hidden" name="author" th:value="${post.getAuthor()}">
-						<input type="hidden" name="previoustags"
-							th:value="${post.getTagsInString()}">
-						<button type="submit">update</button>
-					</form>
+						<form action="#"
+							th:action="@{/posts/{id}/{details}/update(id=${post.getId()},details=${post.getTitle()})}">
+							<input type="hidden" name="title" th:value="${post.getTitle()}">
+							<input type="hidden" name="content"
+								th:value="${post.getContent()}"> <input type="hidden"
+								name="author" th:value="${post.getAuthor()}"> <input
+								type="hidden" name="previoustags"
+								th:value="${post.getTagsInString()}">
+							<button type="submit">update</button>
+						</form>
 
-				</div>
+					</div>
 				</td>
 			</tr>
 		</table>
