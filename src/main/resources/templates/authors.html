@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<p>Tags :</p>
+			<ul th:each="author : ${authorList}">
+				<!-- <p id="tags" th:each="tag :${post.getTags()}"
+					th:text="${tag.getName()}"></p> -->
+					
+				<a th:href = "@{/posts/author/{authorname}(authorname = ${author})}"> <label th:text="${author}"></label><br/> </a>
+							
+			</ul>
+
+</body>
+</html>

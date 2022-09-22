@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+			<p>Tags :</p>
+			<ul th:each="tag : ${tagsList}">
+				<!-- <p id="tags" th:each="tag :${post.getTags()}"
+					th:text="${tag.getName()}"></p> -->
+					
+				<a  th:href = "@{/posts/tag/{tagname}(tagname = ${tag})}"> <label th:text="${tag}"></label><br/> </a>
+							
+			</ul>
+
+	</div>
+</body>
+</html>
