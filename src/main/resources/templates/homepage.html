@@ -6,6 +6,17 @@
 </head>
 <body>
 	<style>
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+input{
+	width: 300px;
+	height: 45px;
+}
+
 table {
 	max-width: 68em;
 	margin: auto;
@@ -76,25 +87,30 @@ td {
 	background-color: #3e8e41;
 }
 </style>
-	<form action="/newpost" method="post">
-		<button class="dropandwritebtn" type="submit">write post</button>
-	</form>
-	
-	<form action="/posts/searchedposts" method="post">
-	<input name="searchArg" type="text">
-		<button class="dropandwritebtn" type="submit">search</button>
-	</form>
-	
-	<div class="filter">
-		<div class="dropdown">
-			<button class="dropandwritebtn">Dropdown</button>
-			<div class="dropdown-content">
-				<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
-					th:href="@{/posts/sorted}">sort by published date</a> <a
-					th:href="@{/posts/tags}">Filter By Tags</a> <a
-					th:href="@{/posts/authors}">Filter By Author</a>
+	<div class="header">
+		<div class="filter">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Dropdown</button>
+				<div class="dropdown-content">
+					<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
+						th:href="@{/posts/sorted}">sort by published date</a> <a
+						th:href="@{/posts/tags}">Filter By Tags</a> <a
+						th:href="@{/posts/authors}">Filter By Author</a>
+				</div>
 			</div>
 		</div>
+		<div class="search">
+			<form action="/posts/searchedposts" method="post">
+				<input name="searchArg" type="text">
+				<button class="dropandwritebtn" type="submit">search</button>
+			</form>
+		</div>
+		<div class="newpost">
+			<form action="/newpost" method="post">
+				<button class="dropandwritebtn" type="submit">write post</button>
+			</form>
+		</div>
+
 	</div>
 
 	<div class="content">

@@ -1,65 +1,72 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
 </head>
+
 <body>
 	<style>
-h1 {
-	margin-top: 4%;
-}
+		h1 {
+			margin-top: 4%;
+		}
 
-input {
-	width: 60%;
-	height: 3em;
-	margin: 2px;
-	font-size: 20px;
-	
-}
+		.blogform input {
+			width: 60%;
+			height: 3em;
+			margin: 2px;
+			font-size: 15px;
+		}
 
-textarea {
-	width: 60%;
-	height: 18vw;
-}
-
-label {
-	font-size: 30px;
-	margin-right: 10em;
-}
-
-button {
-	font-size: 20px;
-	width: 60%;
-	background-color: blue;
-	padding: 0.5em;
-}
-</style>
-	<form action="newpost/savenewpost"  style="text-align: center;"
-		autocomplete="off" method="post">
+		.blogform textarea {
+			width: 60%;
+			height: 18vw;
+		}
+		.tagsform input
+		{
+			width: 60%;
+			margin-bottom: 10px;
+			height: 3em;
+		}
+		.radiobtn input {
+			width: 20px;
+			margin: 0;
+		}
+		.radiobtn label
+		{
+			font-size: 30px;
+			margin-right: 10px;
+		}
+		.radiobtn button
+		{
+			font-size: 20px;
+			width: 60%;
+			background-color: #04aa6d;
+			padding: 0.5em;
+			margin: 10px;
+		}
+	</style>
+	<form action="newpost/savenewpost" style="text-align: center;" autocomplete="off" method="post">
 		<h1>Write your blog post</h1>
-		<input type="text" name="title" placeholder="Enter Title"
-			required="required"><br>
-		<textarea  name="content" rows="15" cols="28"
-			placeholder="Write blog here" required="required"></textarea>
-		<br> <input type="text" name="author" placeholder="Auhor name"
-			required="required"><br>
-
-
-
-		<div>
-			<input type="text" list="tags" name="tagsname" multiple="multiple"
-				placeholder="example : #tag1, #tag2">
+		<div class="blogform">
+			<input type="text" name="title" placeholder="Enter Title" required="required"><br>
+			<textarea name="content" rows="15" cols="28" placeholder="Write blog here" required="required"></textarea>
+			<br> <input type="text" name="author" placeholder="Auhor name" required="required"><br>
+		</div>
+		<div class="tagsform">
+			<input type="text" list="tags" name="tagsname" multiple="multiple" placeholder="example : #tag1, #tag2">
 
 			<datalist id="tags">
 				<option th:each="tag : ${listOfTags}" th:text="${tag}">
 			</datalist>
 		</div>
-		<input type="radio" id="save" name="postType" value="save"
-			required="required">   <label for="save">save</label> <input
-			type="radio" id="publish" name="postType" value="publish"> <label
-			for="publish">publish</label><br>
-		<button type="submit">submit</button>
+		<div class="radiobtn"><input type="radio" id="save" name="postType" value="save" required="required">   <label
+				for="save">save</label> <input type="radio" id="publish" name="postType" value="publish"> <label
+				for="publish">publish</label><br>
+			<button type="submit">submit</button>
+		</div>
 	</form>
 </body>
+
 </html>
