@@ -43,8 +43,7 @@ a {
 					<h1 th:text="${post.getTitle()}"></h1>
 					<p th:text="${post.getExcerpt()}"></p>
 					<p th:text="${post.getAuthor()}"></p>
-					<p th:text="${post.getPublishedAt()}"></p>
-					<p th:text="${post.getCreatedAt()}"></p>
+					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
 					<div class="tags">
 						<p>Tags :</p>
 						<p id="tags" th:each="tag :${post.getTags()}"

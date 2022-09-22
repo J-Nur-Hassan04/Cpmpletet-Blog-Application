@@ -33,7 +33,7 @@ public class CommentControler {
 	}
 
 	@RequestMapping("/posts/{id}/{details}/addcomment/savecomment")
-	public ModelAndView updateComment(@RequestParam("name") String name, @RequestParam("email") String email,
+	public ModelAndView saveNewComment(@RequestParam("name") String name, @RequestParam("email") String email,
 			@RequestParam("comment") String comment, @PathVariable("id") int postId,
 			@PathVariable("details") String title) {
 		Posts post = postRepo.findById(postId).orElse(null);
@@ -50,21 +50,44 @@ public class CommentControler {
 		postRepo.save(post);
 		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
 	}
-	
-	public ModelAndView saveComment(Comments comment, @PathVariable("id") int postId,
+
+	@RequestMapping("/posts/{id}/{details}/{commentid}/updatecomment")
+	public ModelAndView getCommentUpdatePage(@PathVariable("commentid") int commentId, @PathVariable("id") int postId,
 			@PathVariable("details") String title) {
+		ModelAndView mv = new ModelAndView();
 
-		Posts post = postRepo.findById(postId).orElse(null);
-		post.getId();
+		Comments comment = commentRepo.findById(commentId).orElse(null);
+		mv.addObject("comment", comment);
+		mv.addObject("postId", postId);
+		mv.addObject("title", title);
 
-		comment.setCreatedAt(new Date());
-		comment.setUpdatedAt(new Date());
-		comment.setPosts(post);
-		post.getComments().add(comment);
-		postRepo.save(post);
+		mv.setViewName("commentform");
+
+		return mv;
+	}
+
+	@RequestMapping("/posts/{id}/{details}/{commentid}/updatecomment/savecomment")
+	public ModelAndView saveUpdatedComment(@PathVariable("commentid") int commentId, @PathVariable("details") String title,
+			@PathVariable("id") int postId, @RequestParam("name") String name, @RequestParam("email") String email,
+			@RequestParam("comment") String comment) {
+
+		Comments previousComment = commentRepo.findById(commentId).orElse(null);
+		
+		previousComment.setName(name);
+		previousComment.setEmail(email);
+		previousComment.setComment(comment);
+		previousComment.setUpdatedAt(new Date());
+		commentRepo.save(previousComment);
 
 		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
 
+	}
+	@RequestMapping("/posts/{id}/{details}/{commentid}/deletecomment")
+	public ModelAndView deleteComment(@PathVariable("commentid") int commentId, @PathVariable("details") String title,
+			@PathVariable("id") int postId)
+	{
+		commentRepo.deleteById(commentId);
+		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
 	}
 
 }

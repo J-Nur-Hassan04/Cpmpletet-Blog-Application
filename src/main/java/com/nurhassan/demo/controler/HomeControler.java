@@ -24,7 +24,7 @@ public class HomeControler {
 		return mv;
 	}
 	
-	@RequestMapping("/posts/{id}/{details}")
+	@RequestMapping(value = {"/posts/{id}/{details}","/posts/{id}"})
 	public ModelAndView readFulPost(@PathVariable("id") int id)
 	{
 		ModelAndView mv = new ModelAndView();

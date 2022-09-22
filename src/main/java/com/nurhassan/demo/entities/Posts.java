@@ -35,7 +35,7 @@ public class Posts {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
 	private List<Tags> tags = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "posts",cascade = CascadeType.ALL)
