@@ -1,15 +1,30 @@
 package com.nurhassan.demo.controler;
 
+import java.awt.Taskbar.State;
+//import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+//import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpRange;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Posts;
@@ -17,6 +32,7 @@ import com.nurhassan.demo.entities.Tags;
 import com.nurhassan.demo.repo.PostsRepo;
 import com.nurhassan.demo.repo.TagsRepo;
 
+@RestController
 @Controller
 public class HomeControler {
 
@@ -25,12 +41,42 @@ public class HomeControler {
 	@Autowired
 	TagsRepo tagRepo;
 
-	@RequestMapping(value = { "/", "/posts" })
-	public ModelAndView getHomePage() {
+//	private Sort.Direction getSortDirection(String direction)
+//	{
+//		if(direction.equals("asc"))
+//		{
+//			return Sort.Direction.ASC;
+//		}else if(direction.equals("desc"))
+//		{
+//			return Sort.Direction.DESC;
+//		}
+//		return Sort.Direction.ASC;
+//	}
+
+	@RequestMapping(value = { "/posts", "/" })
+	public ModelAndView getPages(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 
-		mv.addObject("postList", postRepo.findAll());
-		mv.setViewName("homepage");
+		int start = 0;
+		int limit = 2;
+
+		Page<Posts> postList;
+		if (request.getParameter("pageNumber") == null) {
+			postList = postRepo.findAll(PageRequest.of(start, limit));
+			mv.addObject("pageNumber", start);
+			mv.addObject("postList", postList);
+			mv.addObject("totalPages", postList.getTotalPages());
+		}
+		if (request.getParameter("pageNumber") != null) {
+			start = Integer.parseInt(request.getParameter("pageNumber"));
+			postList = postRepo.findAll(PageRequest.of(start, limit));
+			mv.addObject("postList", postList);
+			mv.addObject("pageNumber", start);
+			mv.addObject("totalPages", postList.getTotalPages());
+		}
+
+		mv.addObject("limit", 3);
+		mv.setViewName("testpage");
 
 		return mv;
 	}
@@ -55,6 +101,7 @@ public class HomeControler {
 						|| post.getContent().toLowerCase().contains(searchArg)) {
 					tagNamedPosts.add(post);
 				}
+
 			}
 		}
 

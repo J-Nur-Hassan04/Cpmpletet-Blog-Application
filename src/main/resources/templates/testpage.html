@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<style>
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+input {
+	width: 300px;
+	height: 45px;
+}
+
+table {
+	max-width: 68em;
+	margin: auto;
+}
+
+td {
+	padding: 10px;
+	border: 2px solid black;
+	margin: 5px;
+	border: 2px solid black;
+}
+
+.tags {
+	display: flex;
+}
+
+.tags p {
+	margin: 3px;
+}
+
+.content a {
+	margin: 60em;
+}
+
+.dropandwritebtn {
+	background-color: #04AA6D;
+	color: white;
+	padding: 16px;
+	font-size: 16px;
+	border: none;
+	margin-bottom: 10px;
+}
+
+.dropandwritebtn a {
+	margin: 0;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.dropdown:hover .dropbtn {
+	background-color: #3e8e41;
+}
+</style>
+	<div class="header">
+		<div class="filter">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Dropdown</button>
+				<div class="dropdown-content">
+					<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
+						th:href="@{/posts/sorted}">sort by published date</a> <a
+						th:href="@{/posts/tags}">Filter By Tags</a> <a
+						th:href="@{/posts/authors}">Filter By Author</a>
+				</div>
+			</div>
+		</div>
+		<div class="search">
+			<form action="/posts/searchedposts" method="post">
+				<input name="searchArg" type="text">
+				<button class="dropandwritebtn" type="submit">search</button>
+			</form>
+		</div>
+		<div class="newpost">
+			<form action="/newpost" method="post">
+				<button class="dropandwritebtn" type="submit">write post</button>
+			</form>
+		</div>
+
+	</div>
+
+	<div class="content">
+		<table>
+			<tr th:each="post : ${postList}">
+				<td th:if="${post.isPublished()}">
+					<h1 th:text="${post.getTitle()}"></h1>
+					<p th:text="${post.getExcerpt()}"></p>
+					<p th:text="${post.getAuthor()}"></p>
+					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
+					<div class="tags">
+						<p>Tags :</p>
+						<p id="tags" th:each="tag :${post.getTags()}"
+							th:text="${tag.getName()}"></p>
+						<br>
+					</div> <a
+					th:href="@{/posts/{id}/{details}(id=${post.getId()},details=${post.getTitle()})}">read
+						more</a>
+				</td>
+			</tr>
+		</table>
+
+		<div class="pagination">
+			<form th:if="${totalPages gt pageNumber + 1}" action="/posts">
+				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
+				<input name="limit" type="hidden" th:value="${limit}">
+				<button type="submit">Next</button>
+			</form>
+			<form th:if="${pageNumber gt 1}" action="/posts">
+				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
+				<input name="limit" type="hidden" th:value="${limit}">
+				<button type="submit">Previous</button>
+			</form>
+			<form th:if="${pageNumber eq 1}" action="/posts" method="post">
+				<button type="submit">Previous</button>
+			</form>
+		</div>
+
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
