@@ -1,6 +1,5 @@
 package com.nurhassan.demo.repo;
 
-
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -18,7 +17,9 @@ public interface PostsRepo extends JpaRepository<Posts, Integer> {
 	public List<Posts> findAllByOrderByPublishedAtDesc();
 
 	public List<Posts> findAllByAuthor(String author);
-	
+
+	public List<Posts> findAllByTagsName(String name);
+
 	Page<Posts> findAll(Pageable pageable);
 
 }

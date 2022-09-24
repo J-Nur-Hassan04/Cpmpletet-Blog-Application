@@ -65,7 +65,7 @@ public class HomeControler {
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
-		
+
 		mv.addObject("authorList", postRepo.getAllAuthors());
 		mv.addObject("tagsList", tagRepo.getAllTags());
 		mv.addObject("limit", limit);
@@ -87,11 +87,9 @@ public class HomeControler {
 
 		List<Posts> posts = postRepo.findAll();
 		for (Posts post : posts) {
-			if(post.getTitle().toLowerCase().contains(searchArg)
-						|| post.getAuthor().toLowerCase().contains(searchArg)
-						|| post.getContent().toLowerCase().contains(searchArg)
-						|| post.getTagsInString().toLowerCase().contains(searchArg))
-			{
+			if (post.getTitle().toLowerCase().contains(searchArg) || post.getAuthor().toLowerCase().contains(searchArg)
+					|| post.getContent().toLowerCase().contains(searchArg)
+					|| post.getTagsInString().toLowerCase().contains(searchArg)) {
 				tagNamedPosts.add(post);
 			}
 		}
@@ -122,8 +120,7 @@ public class HomeControler {
 
 		return mv;
 	}
-	
-	
+
 	@RequestMapping("/posts/olderposts")
 	public ModelAndView getSortedHomePageDesc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
@@ -140,7 +137,7 @@ public class HomeControler {
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.findAll(PageRequest.of(start, limit,Sort.by("publishedAt").ascending()));
+			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").ascending()));
 			mv.addObject("postList", postList);
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
@@ -152,7 +149,7 @@ public class HomeControler {
 
 		return mv;
 	}
-	
+
 	@RequestMapping("/posts/recentposts")
 	public ModelAndView getSortedHomePageAsc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
@@ -169,7 +166,7 @@ public class HomeControler {
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.findAll(PageRequest.of(start, limit,Sort.by("publishedAt").descending()));
+			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").descending()));
 			mv.addObject("postList", postList);
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
@@ -182,39 +179,29 @@ public class HomeControler {
 
 		return mv;
 	}
+
 	@RequestMapping("/posts/tag")
 	public ModelAndView getTagedPosts(@RequestParam("tagName") String[] tagName) {
 		ModelAndView mv = new ModelAndView();
 		List<Posts> tagNamedPosts = new ArrayList<>();
-
-		List<Posts> posts = postRepo.findAll();
-		for(String tag: tagName)
-		{
-			for(Posts post : posts)
-			{
-				if(post.getTagsInString().contains(tag))
-				{
-					tagNamedPosts.add(post);
-				}
-			}
+		for (String tag : tagName) {
+			tagNamedPosts.addAll(postRepo.findAllByTagsName(tag));
 		}
 		mv.addObject("postList", tagNamedPosts);
 		mv.setViewName("resultpage");
 
 		return mv;
 	}
-	
+
 	@RequestMapping("/posts/author")
-	public ModelAndView getFilteredAuthor(@RequestParam("authorName") String[] authors)
-	  {
+	public ModelAndView getFilteredAuthor(@RequestParam("authorName") String[] authors) {
 		ModelAndView mv = new ModelAndView();
 		List<Posts> alist = new ArrayList<>();
-		for(String author : authors)
-		{
+		for (String author : authors) {
 			alist.addAll(postRepo.findAllByAuthor(author));
 		}
-		mv.addObject("postList",alist);
+		mv.addObject("postList", alist);
 		mv.setViewName("resultpage");
 		return mv;
-	  }
+	}
 }

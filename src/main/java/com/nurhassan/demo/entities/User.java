@@ -1,7 +1,11 @@
 package com.nurhassan.demo.entities;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -13,7 +17,8 @@ public class User {
 	private String email;
 	private String password;
 	
-
+	
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
