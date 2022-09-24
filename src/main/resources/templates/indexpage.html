@@ -13,9 +13,9 @@
 	margin-right: 50px;
 }
 
-input {
+.search input {
 	width: 300px;
-	height: 45px;
+	height: 35px;
 }
 
 table {
@@ -27,7 +27,6 @@ td {
 	padding: 10px;
 	border: 2px solid black;
 	margin: 5px;
-	border: 2px solid black;
 }
 
 .tags {
@@ -37,16 +36,11 @@ td {
 .tags p {
 	margin: 3px;
 }
-
-.content a {
-	margin: 60em;
-}
-
 .dropandwritebtn {
 	background-color: #04AA6D;
 	color: white;
-	padding: 16px;
-	font-size: 16px;
+	padding: 13px;
+	font-size: 13px;
 	border: none;
 	margin-bottom: 10px;
 }
@@ -64,9 +58,22 @@ td {
 	display: none;
 	position: absolute;
 	background-color: #f1f1f1;
-	min-width: 160px;
+	min-width: 300px;
+	max-height: 400px;
+	overflow: scroll;
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 	z-index: 1;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content input {
+	margin: 5px;
+	font-size: 25px;
+}
+
+.dropdown-content label {
+	margin: 5px;
+	font-size: 20px;
 }
 
 .dropdown-content a {
@@ -85,27 +92,71 @@ td {
 }
 
 .dropdown:hover .dropbtn {
+	margin: 10px;
 	background-color: #3e8e41;
+}
+
+label {
+	margin: 5px;
+}
+
+input[type='checkbox'] {
+	transform: scale(1.5);
 }
 </style>
 	<div class="header">
-		<div class="filter">
+		<div class="options">
 			<div class="dropdown">
 				<button class="dropandwritebtn">Dropdown</button>
 				<div class="dropdown-content">
 					<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
-						th:href="@{/posts/sorted}">sort by published date</a> <a
-						th:href="@{/posts/tags}">Filter By Tags</a> <a
-						th:href="@{/posts/authors}">Filter By Author</a>
+						th:href="@{/posts/olderposts}">see older posts</a> <a
+						th:href="@{/posts/recentposts}">see most recent posts</a>
 				</div>
 			</div>
 		</div>
+
+
+		<div class="tag-filter">
+			<form action="/posts/tag">
+				<div class="dropdown">
+					<button class="dropandwritebtn">Filter by Tags</button>
+					<div class="dropdown-content">
+						<div th:each="tag : ${tagsList}">
+							<input th:value="${tag}" type="checkbox" name="tagName">
+							<label th:text="${tag}"></label>
+						</div>
+						<button class="dropandwritebtn" type="submit">submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
+		<div class="author-filter">
+			<form action="/posts/author">
+				<div class="dropdown">
+					<button class="dropandwritebtn">Filter by Author</button>
+					<div class="dropdown-content">
+						<div th:each="author : ${authorList}">
+							<input th:value="${author}" type="checkbox" name="authorName">
+							<label th:text="${author}"></label>
+						</div>
+						<button class="dropandwritebtn" type="submit">submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+
 		<div class="search">
 			<form action="/posts/searchedposts" method="post">
 				<input name="searchArg" type="text">
 				<button class="dropandwritebtn" type="submit">search</button>
 			</form>
 		</div>
+
+
 		<div class="newpost">
 			<form action="/newpost" method="post">
 				<button class="dropandwritebtn" type="submit">write post</button>
@@ -120,7 +171,7 @@ td {
 				<td th:if="${post.isPublished()}">
 					<h1 th:text="${post.getTitle()}"></h1>
 					<p th:text="${post.getExcerpt()}"></p>
-					<p th:text="${post.getAuthor()}"></p>
+					<p th:text=" 'Author : ' + ${post.getAuthor()}"></p>
 					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
 					<div class="tags">
 						<p>Tags :</p>

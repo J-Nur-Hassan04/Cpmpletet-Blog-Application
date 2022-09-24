@@ -51,6 +51,9 @@ public class NewPostControler {
 		List<Tags> newTags = new ArrayList<>();
 		for (String tag : tags) {
 			tag = tag.trim();
+			if (tag.charAt(0) != '#') {
+				tag = "#" + tag;
+			}
 			Tags postTag = new Tags();
 			postTag.setName(tag);
 			postTag.setCreatedAt(new Date());
@@ -112,6 +115,9 @@ public class NewPostControler {
 		List<Tags> newTags = new ArrayList<>();
 		for (String tag : tags) {
 			tag = tag.trim();
+			if (tag.charAt(0) != '#') {
+				tag = "#" + tag;
+			}
 			Tags postTag = new Tags();
 			postTag.setName(tag);
 			postTag.setCreatedAt(new Date());

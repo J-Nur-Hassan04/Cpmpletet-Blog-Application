@@ -93,9 +93,9 @@ td {
 				<button class="dropandwritebtn">Dropdown</button>
 				<div class="dropdown-content">
 					<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
-						th:href="@{/posts/sorted}">sort by published date</a> <a
-						th:href="@{/posts/tags}">Filter By Tags</a> <a
-						th:href="@{/posts/authors}">Filter By Author</a>
+						th:href="@{/posts/olderposts}">see older posts</a>
+						<a
+						th:href="@{/posts/recentposts}">see most recent posts</a>
 				</div>
 			</div>
 		</div>
@@ -119,7 +119,7 @@ td {
 				<td th:if="${post.isPublished()}">
 					<h1 th:text="${post.getTitle()}"></h1>
 					<p th:text="${post.getExcerpt()}"></p>
-					<p th:text="${post.getAuthor()}"></p>
+					<p th:text=" 'Author : ' + ${post.getAuthor()}"></p>
 					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
 					<div class="tags">
 						<p>Tags :</p>

@@ -24,7 +24,7 @@ public class Posts {
 	private int id;
 	private String title;
 	private String excerpt;
-	@Column(length = 5000)
+	@Column(columnDefinition = "TEXT")
 	private String content;
 	private String author;
 	@Temporal(value = TemporalType.TIMESTAMP)
