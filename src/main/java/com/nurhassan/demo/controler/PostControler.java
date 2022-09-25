@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,14 +18,14 @@ import com.nurhassan.demo.repo.PostsRepo;
 import com.nurhassan.demo.repo.TagsRepo;
 
 @Controller
-public class NewPostControler {
+public class PostControler {
 
 	@Autowired
 	PostsRepo postRepo;
 	@Autowired
 	TagsRepo tagRepo;
 
-	@RequestMapping(value = { "/newpost", "/posts/newpost" })
+	@RequestMapping(value = { "/posts/newpost" },method = RequestMethod.POST)
 	public ModelAndView getNewBlogForm() {
 		ModelAndView mv = new ModelAndView();
 
@@ -34,7 +35,7 @@ public class NewPostControler {
 		return mv;
 	}
 
-	@RequestMapping("/newpost/savenewpost")
+	@RequestMapping(value = {"/posts/newpost/savenewpost"},method = RequestMethod.POST)
 	public String saveNewPost(Posts post, @RequestParam("tagsname") String tagsName,
 			@RequestParam("postType") String postType) {
 
@@ -85,7 +86,7 @@ public class NewPostControler {
 		return tag;
 	}
 
-	@RequestMapping("/posts/{id}/{details}/update")
+	@RequestMapping(value = {"/posts/{id}/{details}/update"},method = RequestMethod.GET)
 	public ModelAndView getUpdatePostForm(Posts post, @PathVariable("id") int id, @PathVariable("details") String title,
 			@RequestParam("previoustags") String tags) {
 		ModelAndView mv = new ModelAndView();
@@ -97,7 +98,7 @@ public class NewPostControler {
 		return mv;
 	}
 
-	@RequestMapping(value = { "/posts/{id}/{details}/update/storenewpost" })
+	@RequestMapping(value = { "/posts/{id}/{details}/update/storenewpost" },method = RequestMethod.POST)
 	public String storeupdatedPost(Posts postToUpdate, @RequestParam("tagsname") String tagsName,
 			@RequestParam("postType") String postType, @PathVariable("id") int id) {
 		Posts previousPost = postRepo.findById(id).orElse(postToUpdate);
@@ -135,7 +136,7 @@ public class NewPostControler {
 		return "redirect:/";
 	}
 
-	@RequestMapping("/posts/{id}/{details}/delete")
+	@RequestMapping(value = {"/posts/{id}/{details}/delete"},method = RequestMethod.POST)
 	public ModelAndView deletePost(@PathVariable("id") int id, @PathVariable("details") String title) {
 		ModelAndView mv = new ModelAndView();
 

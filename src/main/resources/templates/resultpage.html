@@ -92,6 +92,7 @@ td {
 			<div class="dropdown">
 				<button class="dropandwritebtn">Dropdown</button>
 				<div class="dropdown-content">
+				<a href="#" th:href="@{/posts}">Home</a>
 					<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
 						th:href="@{/posts/olderposts}">see older posts</a>
 						<a
@@ -100,13 +101,13 @@ td {
 			</div>
 		</div>
 		<div class="search">
-			<form action="/posts/searchedposts" method="post">
+			<form action="/posts/searchedposts">
 				<input name="searchArg" type="text">
 				<button class="dropandwritebtn" type="submit">search</button>
 			</form>
 		</div>
 		<div class="newpost">
-			<form action="/newpost" method="post">
+			<form action="/posts/newpost" method="post">
 				<button class="dropandwritebtn" type="submit">write post</button>
 			</form>
 		</div>

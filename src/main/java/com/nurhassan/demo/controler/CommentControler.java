@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,7 +23,7 @@ public class CommentControler {
 	@Autowired
 	PostsRepo postRepo;
 
-	@RequestMapping("/posts/{id}/{details}/addcomment")
+	@RequestMapping(value = {"/posts/{id}/{details}/addcomment"},method = RequestMethod.POST)
 	public ModelAndView addComment(@PathVariable("id") int id, @PathVariable("details") String title) {
 		ModelAndView mv = new ModelAndView();
 
@@ -33,7 +34,7 @@ public class CommentControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/{id}/{details}/addcomment/savecomment")
+	@RequestMapping(value = {"/posts/{id}/{details}/addcomment/savecomment"},method = RequestMethod.POST)
 	public ModelAndView saveNewComment(@RequestParam("name") String name, @RequestParam("email") String email,
 			@RequestParam("comment") String comment, @PathVariable("id") int postId,
 			@PathVariable("details") String title) {
@@ -54,7 +55,7 @@ public class CommentControler {
 		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
 	}
 
-	@RequestMapping("/posts/{id}/{details}/{commentid}/updatecomment")
+	@RequestMapping(value = {"/posts/{id}/{details}/{commentid}/updatecomment"},method = RequestMethod.GET)
 	public ModelAndView getCommentUpdatePage(@PathVariable("commentid") int commentId, @PathVariable("id") int postId,
 			@PathVariable("details") String title) {
 		ModelAndView mv = new ModelAndView();
@@ -69,7 +70,7 @@ public class CommentControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/{id}/{details}/{commentid}/updatecomment/savecomment")
+	@RequestMapping(value = {"/posts/{id}/{details}/{commentid}/updatecomment/savecomment"},method = RequestMethod.POST)
 	public ModelAndView saveUpdatedComment(@PathVariable("commentid") int commentId,
 			@PathVariable("details") String title, @PathVariable("id") int postId, @RequestParam("name") String name,
 			@RequestParam("email") String email, @RequestParam("comment") String comment) {
@@ -87,7 +88,7 @@ public class CommentControler {
 
 	}
 
-	@RequestMapping("/posts/{id}/{details}/{commentid}/deletecomment")
+	@RequestMapping(value = {"/posts/{id}/{details}/{commentid}/deletecomment"},method = RequestMethod.POST)
 	public ModelAndView deleteComment(@PathVariable("commentid") int commentId, @PathVariable("details") String title,
 			@PathVariable("id") int postId) {
 		commentRepo.deleteById(commentId);

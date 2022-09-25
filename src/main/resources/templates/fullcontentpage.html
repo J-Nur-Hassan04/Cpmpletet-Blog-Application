@@ -91,8 +91,8 @@ p {
 						<button type="submit">update</button>
 					</form>
 					<form action="#"
-						th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}">
-						<button type="submit">delete</button>
+						th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}" method="post">
+						<button type="submit" >delete</button>
 					</form>
 
 				</div>
@@ -113,7 +113,7 @@ p {
 								</form>
 								<form action="#"
 									th:action="@{/posts/{id}/{details}/{commentid}/deletecomment(id = ${post.getId()},details=${post.getTitle},commentid=
-								${comment.getId()})}">
+								${comment.getId()})}" method="post">
 									<button type="submit">delete</button>
 								</form>
 							</td>

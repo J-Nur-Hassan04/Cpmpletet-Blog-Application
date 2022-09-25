@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -74,7 +75,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/searchedposts")
+	@RequestMapping(value = {"/posts/searchedposts"},method = RequestMethod.GET)
 	public ModelAndView getSearchedPosts(@RequestParam("searchArg") String searchArg) {
 
 		return getSearchedPostsByAny(searchArg);
@@ -100,7 +101,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = { "/posts/{id}/{details}", "/posts/{id}" })
+	@RequestMapping(value = { "/posts/{id}/{details}", "/posts/{id}" },method = RequestMethod.GET)
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
 		ModelAndView mv = new ModelAndView();
 		Posts post = postRepo.findById(id).orElse(null);
@@ -111,7 +112,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/drafts")
+	@RequestMapping(value = {"/posts/drafts"},method = RequestMethod.GET)
 	public ModelAndView getDrafts() {
 		ModelAndView mv = new ModelAndView();
 
@@ -121,7 +122,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/olderposts")
+	@RequestMapping(value = {"/posts/olderposts"},method = RequestMethod.GET)
 	public ModelAndView getSortedHomePageDesc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 
@@ -150,7 +151,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/recentposts")
+	@RequestMapping(value = {"/posts/recentposts"},method = RequestMethod.GET)
 	public ModelAndView getSortedHomePageAsc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 
@@ -180,7 +181,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/tag")
+	@RequestMapping(value = {"/posts/tag"},method = RequestMethod.GET)
 	public ModelAndView getTagedPosts(@RequestParam("tagName") String[] tagName) {
 		ModelAndView mv = new ModelAndView();
 		List<Posts> tagNamedPosts = new ArrayList<>();
@@ -193,7 +194,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping("/posts/author")
+	@RequestMapping(value = {"/posts/author"},method = RequestMethod.GET)
 	public ModelAndView getFilteredAuthor(@RequestParam("authorName") String[] authors) {
 		ModelAndView mv = new ModelAndView();
 		List<Posts> alist = new ArrayList<>();
