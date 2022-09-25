@@ -23,16 +23,16 @@ public class CommentControler {
 	@Autowired
 	PostsRepo postRepo;
 
-	@RequestMapping(value = {"/posts/{id}/{details}/addcomment"},method = RequestMethod.POST)
-	public ModelAndView addComment(@PathVariable("id") int id, @PathVariable("details") String title) {
-		ModelAndView mv = new ModelAndView();
-
-		mv.addObject("postId", id);
-		mv.addObject("title", title);
-
-		mv.setViewName("commentform");
-		return mv;
-	}
+//	@RequestMapping(value = {"/posts/{id}/{details}/addcomment"},method = RequestMethod.POST)
+//	public ModelAndView addComment(@PathVariable("id") int id, @PathVariable("details") String title) {
+//		ModelAndView mv = new ModelAndView();
+//
+//		mv.addObject("postId", id);
+//		mv.addObject("title", title);
+//
+//		mv.setViewName("commentform");
+//		return mv;
+//	}
 
 	@RequestMapping(value = {"/posts/{id}/{details}/addcomment/savecomment"},method = RequestMethod.POST)
 	public ModelAndView saveNewComment(@RequestParam("name") String name, @RequestParam("email") String email,

@@ -1,3 +1,4 @@
+
 package com.nurhassan.demo.controler;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class PostControler {
 	@Autowired
 	TagsRepo tagRepo;
 
-	@RequestMapping(value = { "/posts/newpost" },method = RequestMethod.POST)
+	@RequestMapping(value = { "/newpost" })
 	public ModelAndView getNewBlogForm() {
 		ModelAndView mv = new ModelAndView();
 
@@ -35,7 +36,7 @@ public class PostControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/newpost/savenewpost"},method = RequestMethod.POST)
+	@RequestMapping(value = {"/newpost/savenewpost"},method = RequestMethod.POST)
 	public String saveNewPost(Posts post, @RequestParam("tagsname") String tagsName,
 			@RequestParam("postType") String postType) {
 

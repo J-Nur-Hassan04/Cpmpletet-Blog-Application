@@ -29,6 +29,10 @@ td {
 	margin: 5px;
 }
 
+table td a {
+	float: right;
+}
+
 .tags {
 	display: flex;
 }
@@ -36,6 +40,7 @@ td {
 .tags p {
 	margin: 3px;
 }
+
 .dropandwritebtn {
 	background-color: #04AA6D;
 	color: white;
@@ -109,35 +114,34 @@ input[type='checkbox'] {
 			<div class="dropdown">
 				<button class="dropandwritebtn">Dropdown</button>
 				<div class="dropdown-content">
-				<a href="#" th:href="@{/posts}">Home</a>
-					<a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
+					<a href="#" th:href="@{/posts}">Home</a> <a href="#"
+						th:href="@{/posts/drafts}">See drafts</a> <a
 						th:href="@{/posts/olderposts}">see older posts</a> <a
 						th:href="@{/posts/recentposts}">see most recent posts</a>
 				</div>
 			</div>
 		</div>
 
-
 		<div class="tag-filter">
-				<div class="dropdown">
-					<button class="dropandwritebtn">Filter by Tags</button>
-					<div class="dropdown-content">
-			<form action="/posts/tag">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Filter by Tags</button>
+				<div class="dropdown-content">
+					<form action="/posts/tag">
 						<div th:each="tag : ${tagsList}">
 							<input th:value="${tag}" type="checkbox" name="tagName">
 							<label th:text="${tag}"></label>
 						</div>
 						<button class="dropandwritebtn" type="submit">submit</button>
-			</form>
-					</div>
+					</form>
 				</div>
+			</div>
 		</div>
 
 
 		<div class="author-filter">
-				<div class="dropdown">
-					<button class="dropandwritebtn">Filter by Author</button>
-					<div class="dropdown-content">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Filter by Author</button>
+				<div class="dropdown-content">
 					<form action="/posts/author">
 						<div th:each="author : ${authorList}">
 							<input th:value="${author}" type="checkbox" name="authorName">
@@ -146,7 +150,7 @@ input[type='checkbox'] {
 						<button class="dropandwritebtn" type="submit">submit</button>
 					</form>
 				</div>
-				</div>
+			</div>
 		</div>
 
 
@@ -158,10 +162,8 @@ input[type='checkbox'] {
 		</div>
 
 
-		<div class="newpost">
-			<form action="/posts/newpost" method="post">
-				<button class="dropandwritebtn" type="submit">write post</button>
-			</form>
+		<div class="dropandwritebtn">
+			<a href="/newpost">Write post</a>
 		</div>
 
 	</div>
@@ -197,7 +199,7 @@ input[type='checkbox'] {
 				<input name="limit" type="hidden" th:value="${limit}">
 				<button type="submit">Previous</button>
 			</form>
-			<form th:if="${pageNumber eq 1}" action="/posts" method="post">
+			<form th:if="${pageNumber eq 1}" action="/posts">
 				<button type="submit">Previous</button>
 			</form>
 		</div>

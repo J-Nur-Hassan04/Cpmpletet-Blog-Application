@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -182,9 +183,9 @@ public class HomeControler {
 	}
 
 	@RequestMapping(value = {"/posts/tag"},method = RequestMethod.GET)
-	public ModelAndView getTagedPosts(@RequestParam("tagName") String[] tagName) {
+	public ModelAndView getTagedPosts(@RequestParam(name = "tagName",required = false,defaultValue = "#") String[] tagName) {
 		ModelAndView mv = new ModelAndView();
-		List<Posts> tagNamedPosts = new ArrayList<>();
+		Set<Posts> tagNamedPosts = new HashSet<>();
 		for (String tag : tagName) {
 			tagNamedPosts.addAll(postRepo.findAllByTagsName(tag));
 		}
@@ -195,14 +196,22 @@ public class HomeControler {
 	}
 
 	@RequestMapping(value = {"/posts/author"},method = RequestMethod.GET)
-	public ModelAndView getFilteredAuthor(@RequestParam("authorName") String[] authors) {
+	public ModelAndView getFilteredAuthor(@RequestParam(name = "authorName",required = false, defaultValue = "author") String[] authors) {
 		ModelAndView mv = new ModelAndView();
-		List<Posts> alist = new ArrayList<>();
+		Set<Posts> alist = new HashSet<>();
 		for (String author : authors) {
 			alist.addAll(postRepo.findAllByAuthor(author));
 		}
 		mv.addObject("postList", alist);
 		mv.setViewName("resultpage");
+		return mv;
+	}
+	
+	@RequestMapping("/login")
+	public ModelAndView getLoginForm()
+	{
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("login");
 		return mv;
 	}
 }
