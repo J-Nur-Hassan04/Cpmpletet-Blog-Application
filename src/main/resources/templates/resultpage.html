@@ -334,35 +334,6 @@ input[type='checkbox'] {
 					<p th:text=" 'Author : ' + ${post.getAuthor()}"></p>
 					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
 					<div class="tags">
-	@RequestMapping(value = {"/posts/searchedposts"},method = RequestMethod.GET)
-	public ModelAndView getSearchedPosts(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView();
-		String searchArg = request.getParameter("searchArg").toUpperCase();
-		int start = 0;
-		int limit = 2;
-
-		Page<Posts> postList;
-		if (request.getParameter("pageNumber") == null) {
-			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
-			mv.addObject("pageNumber", start);
-			mv.addObject("postList", postList);
-			mv.addObject("totalPages", postList.getTotalPages());
-		}
-		if (request.getParameter("pageNumber") != null) {
-			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
-			mv.addObject("postList", postList);
-			mv.addObject("pageNumber", start);
-			mv.addObject("totalPages", postList.getTotalPages());
-		}
-		mv.addObject("searchArg",searchArg);
-		mv.addObject("limit", limit);
-		mv.setViewName("resultpage");
-		
-		return mv;
-		
-	}
-					
 						<p>Tags :</p>
 						<p id="tags" th:each="tag :${post.getTags()}"
 							th:text="${tag.getName()}"></p>
@@ -374,7 +345,7 @@ input[type='checkbox'] {
 			</tr>
 		</table>
 
-		<div class="pagination">
+		<!-- <div class="pagination">
 			<form th:if="${totalPages gt pageNumber + 1}" action="/posts/searchedposts/">
 				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
 				<input name="searchArg" type="hidden" th:value="${searchArg}">
@@ -391,7 +362,7 @@ input[type='checkbox'] {
 			<input name="searchArg" type="hidden" th:value="${searchArg}">
 				<button type="submit">Previous</button>
 			</form>
-		</div>
+		</div> -->
 
 	</div>
 </body>

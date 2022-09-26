@@ -1,9 +1,6 @@
 package com.nurhassan.demo.controler;
 
-import java.util.HashSet;
 import java.util.List;
-//import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,48 +70,48 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
-	public ModelAndView getSearchedPosts(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView();
-		String searchArg = request.getParameter("searchArg").toUpperCase();
-		int start = 0;
-		int limit = 2;
-
-		Page<Posts> postList;
-		if (request.getParameter("pageNumber") == null) {
-			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
-			mv.addObject("pageNumber", start);
-			mv.addObject("postList", postList);
-			mv.addObject("totalPages", postList.getTotalPages());
-		}
-		if (request.getParameter("pageNumber") != null) {
-			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
-			mv.addObject("postList", postList);
-			mv.addObject("pageNumber", start);
-			mv.addObject("totalPages", postList.getTotalPages());
-		}
-		mv.addObject("searchArg", searchArg);
-		mv.addObject("limit", limit);
-		mv.setViewName("resultpage");
-
-		return mv;
-
-	}
-
-//	public ModelAndView getSearchedPostsByAny(String searchArg) {
+//	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
+//	public ModelAndView getSearchedPosts(HttpServletRequest request) {
 //		ModelAndView mv = new ModelAndView();
-//		searchArg = searchArg.toUpperCase();
-//		System.out.println(searchArg);
+//		String searchArg = request.getParameter("searchArg").toUpperCase();
+//		int start = 0;
+//		int limit = 2;
 //
-//		List<Posts> tagNamedPosts = postRepo.searchedPosts(searchArg);
-//
-//		mv.addObject("postList", tagNamedPosts);
+//		Page<Posts> postList;
+//		if (request.getParameter("pageNumber") == null) {
+//			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
+//			mv.addObject("pageNumber", start);
+//			mv.addObject("postList", postList);
+//			mv.addObject("totalPages", postList.getTotalPages());
+//		}
+//		if (request.getParameter("pageNumber") != null) {
+//			start = Integer.parseInt(request.getParameter("pageNumber"));
+//			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
+//			mv.addObject("postList", postList);
+//			mv.addObject("pageNumber", start);
+//			mv.addObject("totalPages", postList.getTotalPages());
+//		}
+//		mv.addObject("searchArg", searchArg);
+//		mv.addObject("limit", limit);
 //		mv.setViewName("resultpage");
 //
 //		return mv;
 //
 //	}
+	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
+	public ModelAndView getSearchedPostsByAny(String searchArg) {
+		ModelAndView mv = new ModelAndView();
+		searchArg = searchArg.toUpperCase();
+		System.out.println(searchArg);
+
+		List<Posts> tagNamedPosts = postRepo.searchedPosts(searchArg);
+
+		mv.addObject("postList", tagNamedPosts);
+		mv.setViewName("resultpage");
+
+		return mv;
+
+	}
 
 	@RequestMapping(value = { "/posts/{id}/{details}", "/posts/{id}" }, method = RequestMethod.GET)
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
@@ -146,6 +142,7 @@ public class HomeControler {
 		int limit = 2;
 
 		Page<Posts> postList;
+		
 		if (request.getParameter("pageNumber") == null) {
 			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").ascending()));
 			mv.addObject("pageNumber", start);
@@ -159,6 +156,7 @@ public class HomeControler {
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
+		
 		mv.addObject("authorList", postRepo.getAllAuthors());
 		mv.addObject("tagsList", tagRepo.getAllTags());
 		mv.addObject("limit", limit);
@@ -201,13 +199,10 @@ public class HomeControler {
 	public ModelAndView getTagedPosts(
 			@RequestParam(name = "tagName", required = false, defaultValue = "#") String[] tagName) {
 		ModelAndView mv = new ModelAndView();
-		Set<Posts> tagNamedPosts = new HashSet<>();
-		for (String tag : tagName) {
-			tagNamedPosts.addAll(postRepo.findAllByTagsName(tag));
-		}
-		mv.addObject("postList", tagNamedPosts);
+		
+		mv.addObject("postList", postRepo.findAllByTagsArray(tagName));	
 		mv.setViewName("resultpage");
-
+		
 		return mv;
 	}
 
@@ -215,20 +210,19 @@ public class HomeControler {
 	public ModelAndView getFilteredAuthor(
 			@RequestParam(name = "authorName", required = false, defaultValue = "author") String[] authors) {
 		ModelAndView mv = new ModelAndView();
-		Set<Posts> alist = new HashSet<>();
-		for (String author : authors) {
-			alist.addAll(postRepo.findAllByAuthor(author));
-		}
-//		Page<Posts> p = new Pagei
-		mv.addObject("postList", alist);
+		
+		mv.addObject("postList", postRepo.findAllByAuthorArray(authors));
 		mv.setViewName("resultpage");
+		
 		return mv;
 	}
 
 	@RequestMapping("/login")
 	public ModelAndView getLoginForm() {
 		ModelAndView mv = new ModelAndView();
+		
 		mv.setViewName("login");
+		
 		return mv;
 	}
 }

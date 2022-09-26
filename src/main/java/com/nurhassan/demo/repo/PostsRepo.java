@@ -21,7 +21,14 @@ public interface PostsRepo extends JpaRepository<Posts, Integer> {
 	public List<Posts> findAllByTagsName(String name);
 
 	@Query("SELECT post from Posts post join post.tags tag where upper (tag.name) like concat('%',(?1),'%') or upper (post.title) like concat('%',(?1),'%') or upper (post.content) like concat('%',(?1),'%') or upper (post.author) like concat('%',(?1),'%') group by post.id")
-	Page<Posts> searchedPosts(String searchArg,Pageable pageable);
+	List<Posts> searchedPosts(String searchArg);
+	//	Page<Posts> searchedPosts(String searchArg,Pageable pageable);
+	
+	@Query("SELECT post from Posts post join post.tags tag where (tag.name) in (:tags)")
+	List<Posts> findAllByTagsArray(String[] tags);
+	
+	@Query("select post from Posts post where (post.author) in (:authors)")
+	List<Posts> findAllByAuthorArray(String[] authors);
 
 	Page<Posts> findAll(Pageable pageable);
 
