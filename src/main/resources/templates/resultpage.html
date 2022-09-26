@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -132,6 +132,267 @@ td {
 				</td>
 			</tr>
 		</table>
+	</div>
+
+	<div class="pagination">
+		<form th:if="${totalPages gt pageNumber + 1}" action="/posts/">
+			<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
+			<input name="limit" type="hidden" th:value="${limit}">
+			<button type="submit">Next</button>
+		</form>
+		<form th:if="${pageNumber gt 1}" action="/posts/">
+			<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
+			<input name="limit" type="hidden" th:value="${limit}">
+			<button type="submit">Previous</button>
+		</form>
+		<form th:if="${pageNumber eq 1}" action="/posts/">
+			<button type="submit">Previous</button>
+		</form>
+	</div>
+
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<style>
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+.search input {
+	width: 300px;
+	height: 35px;
+}
+
+table {
+	max-width: 68em;
+	margin: auto;
+}
+
+td {
+	padding: 10px;
+	border: 2px solid black;
+	margin: 5px;
+}
+
+table td a {
+	float: right;
+}
+
+.tags {
+	display: flex;
+}
+
+.tags p {
+	margin: 3px;
+}
+
+.dropandwritebtn {
+	background-color: #04AA6D;
+	color: white;
+	padding: 13px;
+	font-size: 13px;
+	border: none;
+	margin-bottom: 10px;
+}
+
+.dropandwritebtn a {
+	margin: 0;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 300px;
+	max-height: 400px;
+	overflow: scroll;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content input {
+	margin: 5px;
+	font-size: 25px;
+}
+
+.dropdown-content label {
+	margin: 5px;
+	font-size: 20px;
+}
+
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.dropdown:hover .dropbtn {
+	margin: 10px;
+	background-color: #3e8e41;
+}
+
+label {
+	margin: 5px;
+}
+
+input[type='checkbox'] {
+	transform: scale(1.5);
+}
+</style>
+	<div class="header">
+		<div class="options">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Dropdown</button>
+				<div class="dropdown-content">
+					<a href="#" th:href="@{/posts/}">Home</a> <a href="#"
+						th:href="@{/posts/drafts}">See drafts</a> <a
+						th:href="@{/posts/olderposts}">see older posts</a> <a
+						th:href="@{/posts/recentposts}">see most recent posts</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="tag-filter">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Filter by Tags</button>
+				<div class="dropdown-content">
+					<form action="/posts/tag">
+						<div th:each="tag : ${tagsList}">
+							<input th:value="${tag}" type="checkbox" name="tagName">
+							<label th:text="${tag}"></label>
+						</div>
+						<button class="dropandwritebtn" type="submit">submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="author-filter">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Filter by Author</button>
+				<div class="dropdown-content">
+					<form action="/posts/author">
+						<div th:each="author : ${authorList}">
+							<input th:value="${author}" type="checkbox" name="authorName">
+							<label th:text="${author}"></label>
+						</div>
+						<button class="dropandwritebtn" type="submit">submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="search">
+			<form action="/posts/searchedposts">
+				<input name="searchArg" type="text">
+				<button class="dropandwritebtn" type="submit">search</button>
+			</form>
+		</div>
+
+
+		<div class="dropandwritebtn">
+			<a href="/newpost">Write post</a>
+		</div>
+
+	</div>
+
+	<div class="content">
+		<table>
+			<tr th:each="post : ${postList}">
+				<td th:if="${post.isPublished()}">
+					<h1 th:text="${post.getTitle()}"></h1>
+					<p th:text="${post.getExcerpt()}"></p>
+					<p th:text=" 'Author : ' + ${post.getAuthor()}"></p>
+					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
+					<div class="tags">
+	@RequestMapping(value = {"/posts/searchedposts"},method = RequestMethod.GET)
+	public ModelAndView getSearchedPosts(HttpServletRequest request) {
+		ModelAndView mv = new ModelAndView();
+		String searchArg = request.getParameter("searchArg").toUpperCase();
+		int start = 0;
+		int limit = 2;
+
+		Page<Posts> postList;
+		if (request.getParameter("pageNumber") == null) {
+			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
+			mv.addObject("pageNumber", start);
+			mv.addObject("postList", postList);
+			mv.addObject("totalPages", postList.getTotalPages());
+		}
+		if (request.getParameter("pageNumber") != null) {
+			start = Integer.parseInt(request.getParameter("pageNumber"));
+			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
+			mv.addObject("postList", postList);
+			mv.addObject("pageNumber", start);
+			mv.addObject("totalPages", postList.getTotalPages());
+		}
+		mv.addObject("searchArg",searchArg);
+		mv.addObject("limit", limit);
+		mv.setViewName("resultpage");
+		
+		return mv;
+		
+	}
+					
+						<p>Tags :</p>
+						<p id="tags" th:each="tag :${post.getTags()}"
+							th:text="${tag.getName()}"></p>
+						<br>
+					</div> <a
+					th:href="@{/posts/{id}/{details}(id=${post.getId()},details=${post.getTitle()})}">read
+						more</a>
+				</td>
+			</tr>
+		</table>
+
+		<div class="pagination">
+			<form th:if="${totalPages gt pageNumber + 1}" action="/posts/searchedposts/">
+				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
+				<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="limit" type="hidden" th:value="${limit}">
+				<button type="submit">Next</button>
+			</form>
+			<form th:if="${pageNumber gt 1}" action="/posts/searchedposts/">
+				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
+				<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="limit" type="hidden" th:value="${limit}">
+				<button type="submit">Previous</button>
+			</form>
+			<form th:if="${pageNumber eq 1}" action="/posts/searchedposts">
+			<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<button type="submit">Previous</button>
+			</form>
+		</div>
+
 	</div>
 </body>
 </html>

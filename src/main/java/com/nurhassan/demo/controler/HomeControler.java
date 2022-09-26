@@ -1,6 +1,5 @@
 package com.nurhassan.demo.controler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 //import java.util.Optional;
@@ -12,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,7 +48,6 @@ public class HomeControler {
 	@RequestMapping(value = { "/posts", "/" })
 	public ModelAndView getPages(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-
 		int start = 0;
 		int limit = 2;
 
@@ -76,33 +74,50 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/searchedposts"},method = RequestMethod.GET)
-	public ModelAndView getSearchedPosts(@RequestParam("searchArg") String searchArg) {
-
-		return getSearchedPostsByAny(searchArg);
-	}
-
-	public ModelAndView getSearchedPostsByAny(String searchArg) {
+	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
+	public ModelAndView getSearchedPosts(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
-		Set<Posts> tagNamedPosts = new HashSet<>();
-		searchArg = searchArg.toLowerCase();
+		String searchArg = request.getParameter("searchArg").toUpperCase();
+		int start = 0;
+		int limit = 2;
 
-		List<Posts> posts = postRepo.findAll();
-		for (Posts post : posts) {
-			if (post.getTitle().toLowerCase().contains(searchArg) || post.getAuthor().toLowerCase().contains(searchArg)
-					|| post.getContent().toLowerCase().contains(searchArg)
-					|| post.getTagsInString().toLowerCase().contains(searchArg)) {
-				tagNamedPosts.add(post);
-			}
+		Page<Posts> postList;
+		if (request.getParameter("pageNumber") == null) {
+			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
+			mv.addObject("pageNumber", start);
+			mv.addObject("postList", postList);
+			mv.addObject("totalPages", postList.getTotalPages());
 		}
-
-		mv.addObject("postList", tagNamedPosts);
+		if (request.getParameter("pageNumber") != null) {
+			start = Integer.parseInt(request.getParameter("pageNumber"));
+			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
+			mv.addObject("postList", postList);
+			mv.addObject("pageNumber", start);
+			mv.addObject("totalPages", postList.getTotalPages());
+		}
+		mv.addObject("searchArg", searchArg);
+		mv.addObject("limit", limit);
 		mv.setViewName("resultpage");
 
 		return mv;
+
 	}
 
-	@RequestMapping(value = { "/posts/{id}/{details}", "/posts/{id}" },method = RequestMethod.GET)
+//	public ModelAndView getSearchedPostsByAny(String searchArg) {
+//		ModelAndView mv = new ModelAndView();
+//		searchArg = searchArg.toUpperCase();
+//		System.out.println(searchArg);
+//
+//		List<Posts> tagNamedPosts = postRepo.searchedPosts(searchArg);
+//
+//		mv.addObject("postList", tagNamedPosts);
+//		mv.setViewName("resultpage");
+//
+//		return mv;
+//
+//	}
+
+	@RequestMapping(value = { "/posts/{id}/{details}", "/posts/{id}" }, method = RequestMethod.GET)
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
 		ModelAndView mv = new ModelAndView();
 		Posts post = postRepo.findById(id).orElse(null);
@@ -113,7 +128,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/drafts"},method = RequestMethod.GET)
+	@RequestMapping(value = { "/posts/drafts" }, method = RequestMethod.GET)
 	public ModelAndView getDrafts() {
 		ModelAndView mv = new ModelAndView();
 
@@ -123,7 +138,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/olderposts"},method = RequestMethod.GET)
+	@RequestMapping(value = { "/posts/olderposts" }, method = RequestMethod.GET)
 	public ModelAndView getSortedHomePageDesc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 
@@ -152,7 +167,7 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/recentposts"},method = RequestMethod.GET)
+	@RequestMapping(value = { "/posts/recentposts" }, method = RequestMethod.GET)
 	public ModelAndView getSortedHomePageAsc(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 
@@ -182,8 +197,9 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/tag"},method = RequestMethod.GET)
-	public ModelAndView getTagedPosts(@RequestParam(name = "tagName",required = false,defaultValue = "#") String[] tagName) {
+	@RequestMapping(value = { "/posts/tag" }, method = RequestMethod.GET)
+	public ModelAndView getTagedPosts(
+			@RequestParam(name = "tagName", required = false, defaultValue = "#") String[] tagName) {
 		ModelAndView mv = new ModelAndView();
 		Set<Posts> tagNamedPosts = new HashSet<>();
 		for (String tag : tagName) {
@@ -195,21 +211,22 @@ public class HomeControler {
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/author"},method = RequestMethod.GET)
-	public ModelAndView getFilteredAuthor(@RequestParam(name = "authorName",required = false, defaultValue = "author") String[] authors) {
+	@RequestMapping(value = { "/posts/author" }, method = RequestMethod.GET)
+	public ModelAndView getFilteredAuthor(
+			@RequestParam(name = "authorName", required = false, defaultValue = "author") String[] authors) {
 		ModelAndView mv = new ModelAndView();
 		Set<Posts> alist = new HashSet<>();
 		for (String author : authors) {
 			alist.addAll(postRepo.findAllByAuthor(author));
 		}
+//		Page<Posts> p = new Pagei
 		mv.addObject("postList", alist);
 		mv.setViewName("resultpage");
 		return mv;
 	}
-	
+
 	@RequestMapping("/login")
-	public ModelAndView getLoginForm()
-	{
+	public ModelAndView getLoginForm() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("login");
 		return mv;

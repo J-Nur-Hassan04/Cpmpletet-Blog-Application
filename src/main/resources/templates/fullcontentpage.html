@@ -22,14 +22,15 @@ textarea {
 button {
 	font-size: 20px;
 	width: 20%;
-	background-color:#04aa6d;
-	width:100px;
+	background-color: #04aa6d;
+	width: 100px;
 	padding: 0.2em;
 }
+
 .comments button {
 	font-size: 15px;
 	width: 100%;
-	background-color:#04aa6d;
+	background-color: #04aa6d;
 	padding: 0.5em;
 	border-radius: 8px;
 }
@@ -68,10 +69,11 @@ p {
 			<td>
 				<h1 th:text="${post.getTitle()}"></h1>
 				<p th:utext="${#strings.replace(post.getContent(),'&#10;','<br>')}"></p>
-				<p th:text="${post.getAuthor()}"></p>
-				<p th:text=" 'Published At: ' +${post.getPublishedAt()}"></p>
-				<p th:text=" 'Updated at: '+${post.getUpdatedAt()}"></p> <label
-				for="tags">Tags : </label>
+				<!-- <p th:text="${post.getAuthor()}"></p> -->
+				<p>Author : [[${post.getAuthor()}]]</p>
+				<p>Published at : [[${post.getPublishedAt()}]]</p>
+				<p>Updated at : [[${post.getUpdatedAt()}]]</p> <label for="tags">Tags
+					: </label>
 				<div class="tags">
 					<p id="tags" th:each="tag :${post.getTags()}"
 						th:text="${tag.getName()}"></p>
@@ -91,8 +93,9 @@ p {
 						<button type="submit">update</button>
 					</form>
 					<form action="#"
-						th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}" method="post">
-						<button type="submit" >delete</button>
+						th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}"
+						method="post">
+						<button type="submit">delete</button>
 					</form>
 
 				</div>
@@ -113,7 +116,8 @@ p {
 								</form>
 								<form action="#"
 									th:action="@{/posts/{id}/{details}/{commentid}/deletecomment(id = ${post.getId()},details=${post.getTitle},commentid=
-								${comment.getId()})}" method="post">
+								${comment.getId()})}"
+									method="post">
 									<button type="submit">delete</button>
 								</form>
 							</td>
@@ -131,12 +135,16 @@ p {
 			th:action="@{/posts/{id}/{details}/addcomment/savecomment(id=${post.getId()},details=${post.getTitle()})}"
 			method="post">
 			<h1>Write your comment</h1>
-			<input type="text" name="name" placeholder="Enter Your Name"
-				required="required"><br> <input type="email"
-				name="email" placeholder="Enter email : example@gmail.com"
-				required="required"><br>
+			<input th:if="${#httpServletRequest.remoteUser == null}" type="text"
+				name="name" placeholder="Enter Your Name" required="required"><br>
+			<input type="hidden"
+				th:if="${#httpServletRequest.remoteUser != null}"
+				th:value="${#httpServletRequest.remoteUser}" name="name"> <input
+				type="email" name="email"
+				placeholder="Enter email : example@gmail.com" required="required"><br>
 			<textarea name="comment" rows="15" cols="28"
-				placeholder="write your comment here" required="required"></textarea><br>
+				placeholder="write your comment here" required="required"></textarea>
+			<br>
 			<button type="submit">submit</button>
 
 
