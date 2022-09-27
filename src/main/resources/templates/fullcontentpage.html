@@ -83,7 +83,7 @@ p {
 
 				<div>
 					<form action="#"
-						th:action="@{/posts/{id}/{details}/update(id=${post.getId()},details=${post.getTitle()})}">
+						th:action="@{/posts/{id}/update(id=${post.getId()})}">
 						<input type="hidden" name="title" th:value="${post.getTitle()}">
 						<input type="hidden" name="content"
 							th:value="${post.getContent()}"> <input type="hidden"
@@ -93,7 +93,7 @@ p {
 						<button type="submit">update</button>
 					</form>
 					<form action="#"
-						th:action="@{/posts/{id}/{details}/delete(id=${post.getId()},details=${post.getTitle()})}"
+						th:action="@{/posts/{id}/delete(id=${post.getId()})}"
 						method="post">
 						<button type="submit">delete</button>
 					</form>
@@ -110,12 +110,12 @@ p {
 								<h4 th:text="${comment.getName()}"></h4>
 								<p th:text="${comment.getComment()}"></p>
 								<form action="#"
-									th:action="@{/posts/{id}/{details}/{commentid}/updatecomment(id = ${post.getId()},details=${post.getTitle},commentid=
+									th:action="@{/posts/{id}/{commentid}/updatecomment(id = ${post.getId()},commentid=
 								${comment.getId()})}">
 									<button type="submit">update</button>
 								</form>
 								<form action="#"
-									th:action="@{/posts/{id}/{details}/{commentid}/deletecomment(id = ${post.getId()},details=${post.getTitle},commentid=
+									th:action="@{/posts/{id}/{commentid}/deletecomment(id = ${post.getId()},commentid=
 								${comment.getId()})}"
 									method="post">
 									<button type="submit">delete</button>
@@ -132,7 +132,7 @@ p {
 	</table>
 	<div>
 		<form style="text-align: center;" action="#"
-			th:action="@{/posts/{id}/{details}/addcomment/savecomment(id=${post.getId()},details=${post.getTitle()})}"
+			th:action="@{/posts/{id}/addcomment/savecomment(id=${post.getId()})}"
 			method="post">
 			<h1>Write your comment</h1>
 			<input th:if="${#httpServletRequest.remoteUser == null}" type="text"

@@ -12,10 +12,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Comments")
-public class Comments {
+public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "cmnt_seq")
-	@SequenceGenerator(name = "cmnt_seq", sequenceName = "cmnt_seq", initialValue = 1, allocationSize = 1)
 	private int id;
 	private String name;
 	private String email;
@@ -24,23 +23,9 @@ public class Comments {
 	private Date updatedAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Posts posts;
+	private Post posts;
 
-	public Comments(int id, String name, String email, String comment, Date createdAt, Date updatedAt, Posts posts) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.comment = comment;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.posts = posts;
-	}
-
-	public Comments() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	public Comment() {}
 
 	public int getId() {
 		return id;
@@ -90,11 +75,11 @@ public class Comments {
 		this.updatedAt = updatedAt;
 	}
 
-	public Posts getPosts() {
+	public Post getPosts() {
 		return posts;
 	}
 
-	public void setPosts(Posts posts) {
+	public void setPosts(Post posts) {
 		this.posts = posts;
 	}
 

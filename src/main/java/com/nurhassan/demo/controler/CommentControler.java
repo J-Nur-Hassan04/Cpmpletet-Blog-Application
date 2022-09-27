@@ -10,37 +10,33 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nurhassan.demo.entities.Comments;
-import com.nurhassan.demo.entities.Posts;
-import com.nurhassan.demo.repo.ComentsRepo;
-import com.nurhassan.demo.repo.PostsRepo;
+import com.nurhassan.demo.entities.Comment;
+import com.nurhassan.demo.entities.Post;
+import com.nurhassan.demo.repository.ComentsRepository;
+import com.nurhassan.demo.repository.PostsRepository;
+import com.nurhassan.demo.service.CommentService;
+import com.nurhassan.demo.service.PostService;
 
 @Controller
 public class CommentControler {
 
 	@Autowired
-	ComentsRepo commentRepo;
+	ComentsRepository commentRepo;
 	@Autowired
-	PostsRepo postRepo;
+	PostsRepository postRepo;
 
-//	@RequestMapping(value = {"/posts/{id}/{details}/addcomment"},method = RequestMethod.POST)
-//	public ModelAndView addComment(@PathVariable("id") int id, @PathVariable("details") String title) {
-//		ModelAndView mv = new ModelAndView();
-//
-//		mv.addObject("postId", id);
-//		mv.addObject("title", title);
-//
-//		mv.setViewName("commentform");
-//		return mv;
-//	}
+	@Autowired
+	PostService postService;
 
-	@RequestMapping(value = {"/posts/{id}/{details}/addcomment/savecomment"},method = RequestMethod.POST)
+	@Autowired
+	CommentService commentService;
+
+	@RequestMapping(value = { "/posts/{id}/addcomment/savecomment" }, method = RequestMethod.POST)
 	public ModelAndView saveNewComment(@RequestParam("name") String name, @RequestParam("email") String email,
-			@RequestParam("comment") String comment, @PathVariable("id") int postId,
-			@PathVariable("details") String title) {
-		Posts post = postRepo.findById(postId).orElse(null);
+			@RequestParam("comment") String comment, @PathVariable("id") int postId) {
+		Post post = postService.getPostById(postId);
 
-		Comments newComment = new Comments();
+		Comment newComment = new Comment();
 
 		newComment.setName(name);
 		newComment.setEmail(email);
@@ -50,50 +46,47 @@ public class CommentControler {
 		newComment.setPosts(post);
 		post.getComments().add(newComment);
 
-		postRepo.save(post);
+		postService.savePost(post);
 
-		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
+		return new ModelAndView("redirect:/posts/" + postId);
 	}
 
-	@RequestMapping(value = {"/posts/{id}/{details}/{commentid}/updatecomment"},method = RequestMethod.GET)
-	public ModelAndView getCommentUpdatePage(@PathVariable("commentid") int commentId, @PathVariable("id") int postId,
-			@PathVariable("details") String title) {
+	@RequestMapping(value = { "/posts/{id}/{commentid}/updatecomment" }, method = RequestMethod.GET)
+	public ModelAndView getCommentUpdatePage(@PathVariable("commentid") int commentId, @PathVariable("id") int postId) {
 		ModelAndView mv = new ModelAndView();
-		Comments comment = commentRepo.findById(commentId).orElse(null);
-
+		Comment comment = commentService.getCommentById(commentId);
+		if (comment == null) {
+			return new ModelAndView("redirect:/posts/" + postId);
+		}
 		mv.addObject("comment", comment);
 		mv.addObject("postId", postId);
-		mv.addObject("title", title);
-
 		mv.setViewName("commentform");
 
 		return mv;
 	}
 
-	@RequestMapping(value = {"/posts/{id}/{details}/{commentid}/updatecomment/savecomment"},method = RequestMethod.POST)
-	public ModelAndView saveUpdatedComment(@PathVariable("commentid") int commentId,
-			@PathVariable("details") String title, @PathVariable("id") int postId, @RequestParam("name") String name,
-			@RequestParam("email") String email, @RequestParam("comment") String comment) {
+	@RequestMapping(value = { "/posts/{id}/{commentid}/updatecomment/savecomment" }, method = RequestMethod.POST)
+	public ModelAndView saveUpdatedComment(@PathVariable("commentid") int commentId, @PathVariable("id") int postId,
+			@RequestParam("name") String name, @RequestParam("email") String email,
+			@RequestParam("comment") String comment) {
 
-		Comments previousComment = commentRepo.findById(commentId).orElse(null);
+		Comment previousComment = commentService.getCommentById(commentId);
 
 		previousComment.setName(name);
 		previousComment.setEmail(email);
 		previousComment.setComment(comment);
 		previousComment.setUpdatedAt(new Date());
 
-		commentRepo.save(previousComment);
-
-		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
+		commentService.saveComment(previousComment);
+		return new ModelAndView("redirect:/posts/" + postId);
 
 	}
 
-	@RequestMapping(value = {"/posts/{id}/{details}/{commentid}/deletecomment"},method = RequestMethod.POST)
-	public ModelAndView deleteComment(@PathVariable("commentid") int commentId, @PathVariable("details") String title,
-			@PathVariable("id") int postId) {
-		commentRepo.deleteById(commentId);
+	@RequestMapping(value = { "/posts/{id}/{commentid}/deletecomment" }, method = RequestMethod.POST)
+	public ModelAndView deleteComment(@PathVariable("commentid") int commentId, @PathVariable("id") int postId) {
+		commentService.deleteCommentById(commentId);
 
-		return new ModelAndView("redirect:/posts/" + postId + "/" + title);
+		return new ModelAndView("redirect:/posts/" + postId);
 	}
 
 }

@@ -1,13 +1,12 @@
 package com.nurhassan.demo.controler;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,30 +15,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nurhassan.demo.entities.Posts;
-import com.nurhassan.demo.repo.PostsRepo;
-import com.nurhassan.demo.repo.TagsRepo;
+import com.nurhassan.demo.entities.Post;
+import com.nurhassan.demo.repository.PostsRepository;
+import com.nurhassan.demo.repository.TagsRepository;
+import com.nurhassan.demo.service.PostService;
+import com.nurhassan.demo.service.TagService;
 
 @RestController
 @Controller
 public class HomeControler {
 
 	@Autowired
-	PostsRepo postRepo;
+	PostsRepository postRepo;
 	@Autowired
-	TagsRepo tagRepo;
+	TagsRepository tagRepo;
 
-//	private Sort.Direction getSortDirection(String direction)
-//	{
-//		if(direction.equals("asc"))
-//		{
-//			return Sort.Direction.ASC;
-//		}else if(direction.equals("desc"))
-//		{
-//			return Sort.Direction.DESC;
-//		}
-//		return Sort.Direction.ASC;
-//	}
+	@Autowired
+	PostService postService;
+
+	@Autowired
+	TagService tagService;
 
 	@RequestMapping(value = { "/posts", "/" })
 	public ModelAndView getPages(HttpServletRequest request) {
@@ -47,16 +42,16 @@ public class HomeControler {
 		int start = 0;
 		int limit = 2;
 
-		Page<Posts> postList;
+		Page<Post> postList;
 		if (request.getParameter("pageNumber") == null) {
-			postList = postRepo.findAll(PageRequest.of(start, limit));
+			postList = postService.getAllPostsOfPage(start, limit);
 			mv.addObject("pageNumber", start);
 			mv.addObject("postList", postList);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.findAll(PageRequest.of(start, limit));
+			postList = postService.getAllPostsOfPage(start, limit);
 			mv.addObject("postList", postList);
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
@@ -101,11 +96,13 @@ public class HomeControler {
 	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
 	public ModelAndView getSearchedPostsByAny(String searchArg) {
 		ModelAndView mv = new ModelAndView();
+		mv.addObject("args", "Search Result Of : " + searchArg);
+
 		searchArg = searchArg.toUpperCase();
-		System.out.println(searchArg);
+		List<Post> tagNamedPosts = postService.getSearchedPosts(searchArg);
 
-		List<Posts> tagNamedPosts = postRepo.searchedPosts(searchArg);
-
+		mv.addObject("authorList", postService.getAllAuthor());
+		mv.addObject("tagsList", tagService.getAlltag());
 		mv.addObject("postList", tagNamedPosts);
 		mv.setViewName("resultpage");
 
@@ -113,10 +110,10 @@ public class HomeControler {
 
 	}
 
-	@RequestMapping(value = { "/posts/{id}/{details}", "/posts/{id}" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/posts/{id}" }, method = RequestMethod.GET)
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
 		ModelAndView mv = new ModelAndView();
-		Posts post = postRepo.findById(id).orElse(null);
+		Post post = postService.getPostById(id);
 
 		mv.addObject("post", post);
 		mv.setViewName("fullcontentpage");
@@ -128,7 +125,7 @@ public class HomeControler {
 	public ModelAndView getDrafts() {
 		ModelAndView mv = new ModelAndView();
 
-		mv.addObject("postList", postRepo.findAll());
+		mv.addObject("postList", postService.getAllPosts());
 		mv.setViewName("draftspage");
 
 		return mv;
@@ -141,24 +138,24 @@ public class HomeControler {
 		int start = 0;
 		int limit = 2;
 
-		Page<Posts> postList;
-		
+		Page<Post> postList;
+
 		if (request.getParameter("pageNumber") == null) {
-			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").ascending()));
+			postList = postService.getSortedPosts(start, limit, "publishedAt", "ASC");
 			mv.addObject("pageNumber", start);
 			mv.addObject("postList", postList);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").ascending()));
+			postList = postService.getSortedPosts(start, limit, "publishedAt", "ASC");
 			mv.addObject("postList", postList);
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
-		
-		mv.addObject("authorList", postRepo.getAllAuthors());
-		mv.addObject("tagsList", tagRepo.getAllTags());
+
+		mv.addObject("authorList", postService.getAllAuthor());
+		mv.addObject("tagsList", tagService.getAlltag());
 		mv.addObject("limit", limit);
 		mv.setViewName("indexpage");
 
@@ -172,37 +169,42 @@ public class HomeControler {
 		int start = 0;
 		int limit = 2;
 
-		Page<Posts> postList;
+		Page<Post> postList;
 		if (request.getParameter("pageNumber") == null) {
-			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").descending()));
+			postList = postService.getSortedPosts(start, limit, "publishedAt", "DESC");
 			mv.addObject("pageNumber", start);
 			mv.addObject("postList", postList);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
-			postList = postRepo.findAll(PageRequest.of(start, limit, Sort.by("publishedAt").descending()));
+			postList = postService.getSortedPosts(start, limit, "publishedAt", "DESC");
 			mv.addObject("postList", postList);
 			mv.addObject("pageNumber", start);
 			mv.addObject("totalPages", postList.getTotalPages());
 		}
 
-		mv.addObject("authorList", postRepo.getAllAuthors());
-		mv.addObject("tagsList", tagRepo.getAllTags());
+		mv.addObject("authorList", postService.getAllAuthor());
+		mv.addObject("tagsList", tagService.getAlltag());
 		mv.addObject("limit", limit);
 		mv.setViewName("indexpage");
 
 		return mv;
 	}
+	
 
+//refactored
 	@RequestMapping(value = { "/posts/tag" }, method = RequestMethod.GET)
 	public ModelAndView getTagedPosts(
 			@RequestParam(name = "tagName", required = false, defaultValue = "#") String[] tagName) {
 		ModelAndView mv = new ModelAndView();
-		
-		mv.addObject("postList", postRepo.findAllByTagsArray(tagName));	
+
+		mv.addObject("postList", postRepo.findAllByTagsArray(tagName));
+		mv.addObject("authorList", postRepo.getAllAuthors());
+		mv.addObject("args", "Filtred by tag : " + Arrays.toString(tagName));
+		mv.addObject("tagsList", tagRepo.getAllTags());
 		mv.setViewName("resultpage");
-		
+
 		return mv;
 	}
 
@@ -210,19 +212,23 @@ public class HomeControler {
 	public ModelAndView getFilteredAuthor(
 			@RequestParam(name = "authorName", required = false, defaultValue = "author") String[] authors) {
 		ModelAndView mv = new ModelAndView();
-		
+
 		mv.addObject("postList", postRepo.findAllByAuthorArray(authors));
+
+		mv.addObject("authorList", postRepo.getAllAuthors());
+		mv.addObject("args", "Filtred by Author : " + Arrays.toString(authors));
+		mv.addObject("tagsList", tagRepo.getAllTags());
 		mv.setViewName("resultpage");
-		
+
 		return mv;
 	}
 
 	@RequestMapping("/login")
 	public ModelAndView getLoginForm() {
 		ModelAndView mv = new ModelAndView();
-		
+
 		mv.setViewName("login");
-		
+
 		return mv;
 	}
 }

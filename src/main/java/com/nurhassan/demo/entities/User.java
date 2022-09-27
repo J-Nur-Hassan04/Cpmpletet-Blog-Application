@@ -18,12 +18,9 @@ public class User {
 	private String password;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<Posts> posts;
+	private List<Post> posts;
 
-	public User() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	public User() {}
 
 	public int getId() {
 		return id;
@@ -57,11 +54,11 @@ public class User {
 		this.password = password;
 	}
 
-	public List<Posts> getPosts() {
+	public List<Post> getPosts() {
 		return posts;
 	}
 
-	public void setPosts(List<Posts> posts) {
+	public void setPosts(List<Post> posts) {
 		this.posts = posts;
 	}
 

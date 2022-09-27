@@ -6,7 +6,7 @@
 </head>
 <body>
 	<form style="text-align: center;" action="#"
-		th:action="@{/posts/{id}/{details}/{commentid}/updatecomment/savecomment(id=${postId},details=${title},commentid=${comment.getId()})}"
+		th:action="@{/posts/{id}/{commentid}/updatecomment/savecomment(id=${postId},commentid=${comment.getId()})}"
 		method="post">
 		<h1 style="margin-top: 4%;">update your comment</h1>
 		<input style="width: 60%; height: 3em;"

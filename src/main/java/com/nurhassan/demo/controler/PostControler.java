@@ -13,31 +13,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nurhassan.demo.entities.Posts;
-import com.nurhassan.demo.entities.Tags;
-import com.nurhassan.demo.repo.PostsRepo;
-import com.nurhassan.demo.repo.TagsRepo;
+import com.nurhassan.demo.entities.Post;
+import com.nurhassan.demo.entities.Tag;
+import com.nurhassan.demo.service.PostService;
+import com.nurhassan.demo.service.TagService;
 
 @Controller
 public class PostControler {
 
 	@Autowired
-	PostsRepo postRepo;
+	PostService postService;
+
 	@Autowired
-	TagsRepo tagRepo;
+	TagService tagService;
 
 	@RequestMapping(value = { "/newpost" })
 	public ModelAndView getNewBlogForm() {
 		ModelAndView mv = new ModelAndView();
-
-		mv.addObject("post", new Posts());
+		mv.addObject("post", new Post());
 		mv.setViewName("newpostform");
 
 		return mv;
 	}
 
-	@RequestMapping(value = {"/newpost/savenewpost"},method = RequestMethod.POST)
-	public String saveNewPost(Posts post, @RequestParam("tagsname") String tagsName,
+	@RequestMapping(value = { "/newpost/savenewpost" }, method = RequestMethod.POST)
+	public String saveNewPost(Post post, @RequestParam("tagsname") String postTags,
 			@RequestParam("postType") String postType) {
 
 		post.setPublishedAt(new Date());
@@ -45,18 +45,16 @@ public class PostControler {
 		post.setUpdatedAt(new Date());
 		int cutUpto = (post.getContent().length() > 250) ? 250 : post.getContent().length();
 		post.setExcerpt(post.getContent().substring(0, cutUpto) + "...");
-
 		post.setPublished(postType.equals("publish"));
+		String[] tags = postTags.split(",");
 
-		String[] tags = tagsName.split(",");
-
-		List<Tags> newTags = new ArrayList<>();
+		List<Tag> newTags = new ArrayList<>();
 		for (String tag : tags) {
 			tag = tag.trim();
 			if (tag.charAt(0) != '#') {
 				tag = "#" + tag;
 			}
-			Tags postTag = new Tags();
+			Tag postTag = new Tag();
 			postTag.setName(tag);
 			postTag.setCreatedAt(new Date());
 			postTag.setUpdatedAt(new Date());
@@ -64,34 +62,32 @@ public class PostControler {
 			post.getTags().add(postTag);
 
 			newTags.add(checkAvailablity(tag));
-
 		}
 
 		post.setTags(newTags);
-		postRepo.save(post);
+//		postRepo.save(post);
+		postService.savePost(post);
 
 		return "redirect:/";
 	}
 
-	public Tags checkAvailablity(String tagName) {
-		Tags tag = tagRepo.findByName(tagName);
+	public Tag checkAvailablity(String tagName) {
+		Tag tag = tagService.getTagByName(tagName);
 
 		if (tag == null) {
-			Tags newTag = new Tags();
+			Tag newTag = new Tag();
 			newTag.setName(tagName);
 			newTag.setCreatedAt(new Date());
 			newTag.setUpdatedAt(new Date());
 			return newTag;
 		}
-
 		return tag;
 	}
 
-	@RequestMapping(value = {"/posts/{id}/{details}/update"},method = RequestMethod.GET)
-	public ModelAndView getUpdatePostForm(Posts post, @PathVariable("id") int id, @PathVariable("details") String title,
+	@RequestMapping(value = { "/posts/{id}/update" }, method = RequestMethod.GET)
+	public ModelAndView getUpdatePostForm(Post post, @PathVariable("id") int id,
 			@RequestParam("previoustags") String tags) {
 		ModelAndView mv = new ModelAndView();
-
 		mv.addObject("post", post);
 		mv.addObject("tags", tags);
 		mv.setViewName("updateform");
@@ -99,10 +95,10 @@ public class PostControler {
 		return mv;
 	}
 
-	@RequestMapping(value = { "/posts/{id}/{details}/update/storenewpost" },method = RequestMethod.POST)
-	public String storeupdatedPost(Posts postToUpdate, @RequestParam("tagsname") String tagsName,
+	@RequestMapping(value = { "/posts/{id}/update/storenewpost" }, method = RequestMethod.POST)
+	public String storeupdatedPost(Post postToUpdate, @RequestParam("tagsname") String tagsName,
 			@RequestParam("postType") String postType, @PathVariable("id") int id) {
-		Posts previousPost = postRepo.findById(id).orElse(postToUpdate);
+		Post previousPost = postService.getPostById(id);
 
 		previousPost.setTitle(postToUpdate.getTitle());
 		previousPost.setContent(postToUpdate.getContent());
@@ -114,13 +110,13 @@ public class PostControler {
 
 		String[] tags = tagsName.split(",");
 
-		List<Tags> newTags = new ArrayList<>();
+		List<Tag> newTags = new ArrayList<>();
 		for (String tag : tags) {
 			tag = tag.trim();
 			if (tag.charAt(0) != '#') {
 				tag = "#" + tag;
 			}
-			Tags postTag = new Tags();
+			Tag postTag = new Tag();
 			postTag.setName(tag);
 			postTag.setCreatedAt(new Date());
 			postTag.setUpdatedAt(new Date());
@@ -132,17 +128,17 @@ public class PostControler {
 		}
 
 		previousPost.setTags(newTags);
-		postRepo.save(previousPost);
+		postService.savePost(previousPost);
 
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = {"/posts/{id}/{details}/delete"},method = RequestMethod.POST)
-	public ModelAndView deletePost(@PathVariable("id") int id, @PathVariable("details") String title) {
-		ModelAndView mv = new ModelAndView();
+	@RequestMapping(value = { "/posts/{id}/delete" }, method = RequestMethod.POST)
+	public ModelAndView deletePost(@PathVariable("id") int id) {
+		Post postToBeDelete = postService.getPostById(id);
+		postService.deletePost(postToBeDelete);
 
-		Posts postToBeDelete = postRepo.findById(id).orElse(null);
-		postRepo.delete(postToBeDelete);
+		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/");
 
 		return mv;

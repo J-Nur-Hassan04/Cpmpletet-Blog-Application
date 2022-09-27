@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Tags")
-public class Tags {
+public class Tag {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "tag_seq")
@@ -23,21 +23,9 @@ public class Tags {
 	private String name;
 	
 	@ManyToMany(mappedBy = "tags")
-	List<Posts> post = new ArrayList<>();
+	List<Post> post = new ArrayList<>();
 
-	public Tags(int id, Date createdAt, Date updatedAt, String name, List<Posts> post) {
-		super();
-		this.id = id;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.name = name;
-		this.post = post;
-	}
-
-	public Tags() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	public Tag() {}
 
 	public int getId() {
 		return id;
@@ -71,11 +59,11 @@ public class Tags {
 		this.name = name;
 	}
 
-	public List<Posts> getPost() {
+	public List<Post> getPost() {
 		return post;
 	}
 
-	public void setPost(List<Posts> post) {
+	public void setPost(List<Post> post) {
 		this.post = post;
 	}
 }

@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "Posts")
-public class Posts {
+public class Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Posts_seq")
 	private int id;
@@ -38,38 +38,19 @@ public class Posts {
 	private Date updatedAt;
 
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
-	private List<Tags> tags = new ArrayList<>();
+	private List<Tag> tags = new ArrayList<>();
 
 	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
-	private List<Comments> comments = new ArrayList<>();
+	private List<Comment> comments = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	User user;
 
-	public Posts(int id, String title, String excerpt, String content, String author, Date publishedAt,
-			boolean isPublished, Date createdAt, Date updatedAt, List<Tags> tags, List<Comments> comments) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.excerpt = excerpt;
-		this.content = content;
-		this.author = author;
-		this.publishedAt = publishedAt;
-		this.isPublished = isPublished;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.tags = tags;
-		this.comments = comments;
-	}
-
-	public Posts() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	public Post() {}
 
 	public String getTagsInString() {
 		String tagStr = "";
-		for (Tags tag : tags) {
+		for (Tag tag : tags) {
 			tagStr += tag.getName() + ",";
 		}
 		return tagStr;
@@ -147,19 +128,19 @@ public class Posts {
 		this.updatedAt = updatedAt;
 	}
 
-	public List<Tags> getTags() {
+	public List<Tag> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<Tags> tags) {
+	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
 
-	public List<Comments> getComments() {
+	public List<Comment> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comments> comments) {
+	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
 

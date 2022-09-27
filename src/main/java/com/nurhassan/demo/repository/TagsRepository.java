@@ -1,14 +1,14 @@
-package com.nurhassan.demo.repo;
+package com.nurhassan.demo.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import com.nurhassan.demo.entities.Tags;
+import com.nurhassan.demo.entities.Tag;
 
-public interface TagsRepo extends JpaRepository<Tags, Integer> {
+public interface TagsRepository extends JpaRepository<Tag, Integer> {
 	
-	public Tags findByName(String tagName);
+	public Tag findByName(String tagName);
 	
 	@Query(value = "select name from tags" , nativeQuery = true)
 	public List<String> getAllTags();
