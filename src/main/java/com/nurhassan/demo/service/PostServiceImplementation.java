@@ -14,7 +14,7 @@ import com.nurhassan.demo.repository.PostsRepository;
 public class PostServiceImplementation implements PostService {
 
 	@Autowired
-	PostsRepository postRepository;
+	private PostsRepository postRepository;
 
 	@Override
 	public void savePost(Post post) {

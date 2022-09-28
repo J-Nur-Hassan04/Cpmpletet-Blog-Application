@@ -10,7 +10,7 @@ import com.nurhassan.demo.repository.ComentsRepository;
 public class CommentServiceImplementation implements CommentService {
 
 	@Autowired
-	ComentsRepository commentRepository;
+	private ComentsRepository commentRepository;
 	@Override
 	public Comment getCommentById(int id) {
 		Comment comment = commentRepository.findById(id).orElse(null);

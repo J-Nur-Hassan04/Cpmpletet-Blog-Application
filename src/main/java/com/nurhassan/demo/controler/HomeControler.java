@@ -1,9 +1,5 @@
 package com.nurhassan.demo.controler;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Post;
-import com.nurhassan.demo.repository.PostsRepository;
-import com.nurhassan.demo.repository.TagsRepository;
 import com.nurhassan.demo.service.PostService;
 import com.nurhassan.demo.service.TagService;
 
@@ -27,15 +20,10 @@ import com.nurhassan.demo.service.TagService;
 public class HomeControler {
 
 	@Autowired
-	PostsRepository postRepo;
-	@Autowired
-	TagsRepository tagRepo;
+	private PostService postService;
 
 	@Autowired
-	PostService postService;
-
-	@Autowired
-	TagService tagService;
+	private TagService tagService;
 
 	@RequestMapping(value = { "/posts", "/" })
 	public ModelAndView getPages(HttpServletRequest request) {
@@ -58,8 +46,8 @@ public class HomeControler {
 			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 
-		modelAndView.addObject("authorList", postRepo.getAllAuthors());
-		modelAndView.addObject("tagsList", tagRepo.getAllTags());
+		modelAndView.addObject("authorList", postService.getAllAuthor());
+		modelAndView.addObject("tagsList", tagService.getAlltag());
 		modelAndView.addObject("limit", limit);
 		modelAndView.setViewName("indexpage");
 
@@ -154,52 +142,6 @@ public class HomeControler {
 		return result.substring(0, result.length() - 1);
 	}
 
-//	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
-//	public ModelAndView getSearchedPosts(HttpServletRequest request) {
-//		ModelAndView modelAndView = new ModelAndView();
-//		String searchArg = request.getParameter("searchArg").toUpperCase();
-//		int start = 0;
-//		int limit = 2;
-//
-//		Page<Post> postList;
-//		if (request.getParameter("pageNumber") == null) {
-//			postList = postService.getSearchedPosts(searchArg, start, limit);
-//			modelAndView.addObject("pageNumber", start);
-//			modelAndView.addObject("postList", postList);
-//			modelAndView.addObject("totalPages", postList.getTotalPages());
-//		}
-//		if (request.getParameter("pageNumber") != null) {
-//			start = Integer.parseInt(request.getParameter("pageNumber"));
-//			postList = postService.getSearchedPosts(searchArg, start, limit);
-//			modelAndView.addObject("postList", postList);
-//			modelAndView.addObject("pageNumber", start);
-//			modelAndView.addObject("totalPages", postList.getTotalPages());
-//		}
-//		modelAndView.addObject("searchArg", searchArg);
-//		modelAndView.addObject("limit", limit);
-//		modelAndView.setViewName("searchresultpage");
-//
-//		return modelAndView;
-//
-//	}
-
-//	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
-//	public ModelAndView getSearchedPostsByAny(String searchArg) {
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.addObject("args", "Search Result Of : " + searchArg);
-//
-//		searchArg = searchArg.toUpperCase();
-//		List<Post> tagNamedPosts = postService.getSearchedPosts(searchArg);
-//
-//		modelAndView.addObject("authorList", postService.getAllAuthor());
-//		modelAndView.addObject("tagsList", tagService.getAlltag());
-//		modelAndView.addObject("postList", tagNamedPosts);
-//		modelAndView.setViewName("resultpage");
-//
-//		return modelAndView;
-//
-//	}
-
 	@RequestMapping(value = { "/posts/{id}" }, method = RequestMethod.GET)
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -281,35 +223,6 @@ public class HomeControler {
 
 		return modelAndView;
 	}
-
-//refactored
-//	@RequestMapping(value = { "/posts/tag" }, method = RequestMethod.GET)
-//	public ModelAndView getTagedPosts(
-//			@RequestParam(name = "tagName", required = false, defaultValue = "#") String[] tagName) {
-//		ModelAndView modelAndView = new ModelAndView();
-//
-//		modelAndView.addObject("postList", postRepo.findAllByTagsArray(tagName));
-//		modelAndView.addObject("authorList", postRepo.getAllAuthors());
-//		modelAndView.addObject("args", "Filtred by tag : " + Arrays.toString(tagName));
-//		modelAndView.addObject("tagsList", tagRepo.getAllTags());
-//		modelAndView.setViewName("resultpage");
-//
-//		return modelAndView;
-//	}
-//
-//	@RequestMapping(value = { "/posts/author" }, method = RequestMethod.GET)
-//	public ModelAndView getFilteredAuthor(
-//			@RequestParam(name = "authorName", required = false, defaultValue = "author") String[] authors) {
-//		ModelAndView modelAndView = new ModelAndView();
-//
-//		modelAndView.addObject("postList", postRepo.findAllByAuthorArray(authors));
-//		modelAndView.addObject("authorList", postRepo.getAllAuthors());
-//		modelAndView.addObject("args", "Filtred by Author : " + Arrays.toString(authors));
-//		modelAndView.addObject("tagsList", tagRepo.getAllTags());
-//		modelAndView.setViewName("resultpage");
-//
-//		return modelAndView;
-//	}
 
 	@RequestMapping("/login")
 	public ModelAndView getLoginForm() {

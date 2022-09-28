@@ -25,8 +25,6 @@ public class Tag {
 	@ManyToMany(mappedBy = "tags")
 	List<Post> post = new ArrayList<>();
 
-	public Tag() {}
-
 	public int getId() {
 		return id;
 	}

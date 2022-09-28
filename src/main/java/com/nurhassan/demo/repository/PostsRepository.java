@@ -88,7 +88,8 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 			+ "(tag.name) in (:tags) "
 			+ "and "
 			+ "(post.author) in (:authors)")
-	Page<Post> searchedPostsWithSearchArgTagAuthors(@Param("arg") String searchArgs ,@Param("tags") String[] tags,@Param("authors") String[] authors,Pageable pageable);
+	Page<Post> searchedPostsWithSearchArgTagAuthors(@Param("arg") String searchArgs ,
+			@Param("tags") String[] tags,@Param("authors") String[] authors,Pageable pageable);
 	
 
 	@Query("SELECT post from Post post join post.tags tag where (tag.name) = (:tags)")

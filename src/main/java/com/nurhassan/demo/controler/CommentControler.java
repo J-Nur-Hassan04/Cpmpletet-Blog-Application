@@ -19,10 +19,10 @@ import com.nurhassan.demo.service.PostService;
 public class CommentControler {
 
 	@Autowired
-	PostService postService;
+	private PostService postService;
 
 	@Autowired
-	CommentService commentService;
+	private CommentService commentService;
 
 	@RequestMapping(value = { "/posts/{id}/addcomment/savecomment" }, method = RequestMethod.POST)
 	public ModelAndView saveNewComment(@RequestParam("name") String name, @RequestParam("email") String email,
@@ -46,16 +46,17 @@ public class CommentControler {
 
 	@RequestMapping(value = { "/posts/{id}/{commentid}/updatecomment" }, method = RequestMethod.GET)
 	public ModelAndView getCommentUpdatePage(@PathVariable("commentid") int commentId, @PathVariable("id") int postId) {
-		ModelAndView mv = new ModelAndView();
 		Comment comment = commentService.getCommentById(commentId);
 		if (comment == null) {
 			return new ModelAndView("redirect:/posts/" + postId);
 		}
-		mv.addObject("comment", comment);
-		mv.addObject("postId", postId);
-		mv.setViewName("commentform");
 
-		return mv;
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("comment", comment);
+		modelAndView.addObject("postId", postId);
+		modelAndView.setViewName("commentform");
+
+		return modelAndView;
 	}
 
 	@RequestMapping(value = { "/posts/{id}/{commentid}/updatecomment/savecomment" }, method = RequestMethod.POST)
@@ -77,6 +78,7 @@ public class CommentControler {
 
 	@RequestMapping(value = { "/posts/{id}/{commentid}/deletecomment" }, method = RequestMethod.POST)
 	public ModelAndView deleteComment(@PathVariable("commentid") int commentId, @PathVariable("id") int postId) {
+		
 		commentService.deleteCommentById(commentId);
 
 		return new ModelAndView("redirect:/posts/" + postId);

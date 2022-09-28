@@ -12,7 +12,7 @@ import com.nurhassan.demo.repository.TagsRepository;
 public class TagServiceImplementation implements TagService {
 
 	@Autowired
-	TagsRepository tagRepository;
+	private TagsRepository tagRepository;
 	
 	@Override
 	public Tag getTagByName(String tagName) {

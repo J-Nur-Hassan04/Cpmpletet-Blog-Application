@@ -46,8 +46,6 @@ public class Post {
 	@ManyToOne(fetch = FetchType.LAZY)
 	User user;
 
-	public Post() {}
-
 	public String getTagsInString() {
 		String tagStr = "";
 		for (Tag tag : tags) {

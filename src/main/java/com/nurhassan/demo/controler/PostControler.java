@@ -22,18 +22,18 @@ import com.nurhassan.demo.service.TagService;
 public class PostControler {
 
 	@Autowired
-	PostService postService;
+	private PostService postService;
 
 	@Autowired
-	TagService tagService;
+	private TagService tagService;
 
 	@RequestMapping(value = { "/newpost" })
 	public ModelAndView getNewBlogForm() {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("post", new Post());
-		mv.setViewName("newpostform");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("post", new Post());
+		modelAndView.setViewName("newpostform");
 
-		return mv;
+		return modelAndView;
 	}
 
 	@RequestMapping(value = { "/newpost/savenewpost" }, method = RequestMethod.POST)
@@ -86,12 +86,12 @@ public class PostControler {
 	@RequestMapping(value = { "/posts/{id}/update" }, method = RequestMethod.GET)
 	public ModelAndView getUpdatePostForm(Post post, @PathVariable("id") int id,
 			@RequestParam("previoustags") String tags) {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("post", post);
-		mv.addObject("tags", tags);
-		mv.setViewName("updateform");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("post", post);
+		modelAndView.addObject("tags", tags);
+		modelAndView.setViewName("updateform");
 
-		return mv;
+		return modelAndView;
 	}
 
 	@RequestMapping(value = { "/posts/{id}/update/storenewpost" }, method = RequestMethod.POST)
@@ -137,9 +137,9 @@ public class PostControler {
 		Post postToBeDelete = postService.getPostById(id);
 		postService.deletePost(postToBeDelete);
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/");
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("redirect:/");
 
-		return mv;
+		return modelAndView;
 	}
 }
