@@ -31,7 +31,7 @@ public class PostServiceImplementation implements PostService {
 	@Override
 	public void deletePost(Post post) {
 		postRepository.delete(post);
-		
+
 	}
 
 	@Override
@@ -41,10 +41,10 @@ public class PostServiceImplementation implements PostService {
 	}
 
 	@Override
-	public List<Post> getSearchedPosts(String searchArg) {
-		
-		List<Post> posts = postRepository.searchedPosts(searchArg);
-		
+	public Page<Post> getSearchedPosts(String searchArg, int start, int limit) {
+
+		Page<Post> posts = postRepository.searchedPosts(searchArg, PageRequest.of(start, limit));
+
 		return posts;
 	}
 
@@ -63,13 +63,32 @@ public class PostServiceImplementation implements PostService {
 	@Override
 	public Page<Post> getSortedPosts(int start, int limit, String column, String basic) {
 		Page<Post> posts = null;
-		if(basic.equals("ASC"))
-		{
-			posts = postRepository.findAll(PageRequest.of(start, limit,org.springframework.data.domain.Sort.by(column).ascending()));
-		}else if(basic.equals("DESC"))
-		{
-			posts = postRepository.findAll(PageRequest.of(start, limit,org.springframework.data.domain.Sort.by(column).descending()));
+		if (basic.equals("ASC")) {
+			posts = postRepository
+					.findAll(PageRequest.of(start, limit, org.springframework.data.domain.Sort.by(column).ascending()));
+		} else if (basic.equals("DESC")) {
+			posts = postRepository.findAll(
+					PageRequest.of(start, limit, org.springframework.data.domain.Sort.by(column).descending()));
 		}
+		return posts;
+	}
+
+	@Override
+	public Page<Post> getSearchedPostsWithTagAndAuthor(int start, int limit, String[] tags, String[] authors) {
+		Page<Post> posts = postRepository.searchedPostsWithTagAuthors(tags, authors, PageRequest.of(start, limit));
+		return posts;
+	}
+	
+	@Override
+	public Page<Post> getSearchedPostsWithSearchArgTagAuthors(String searchArg,String[] tags, String[] authors,int start, int limit)
+	{
+		Page<Post> posts = postRepository.searchedPostsWithSearchArgTagAuthors(searchArg,tags, authors, PageRequest.of(start, limit));
+		return posts;
+	}
+
+	@Override
+	public Page<Post> getSearchedPostWithSearchArgAndTags(String searchArg, String[] tags, int start, int limit) {
+		Page<Post> posts = postRepository.seacchedPostSearchArgAndTags(searchArg, tags, PageRequest.of(start, limit));
 		return posts;
 	}
 

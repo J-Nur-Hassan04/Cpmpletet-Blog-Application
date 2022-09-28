@@ -122,7 +122,7 @@ input[type='checkbox'] {
 			</div>
 		</div>
 
-		<div class="tag-filter">
+		<!-- <div class="tag-filter">
 			<div class="dropdown">
 				<button class="dropandwritebtn">Filter by Tags</button>
 				<div class="dropdown-content">
@@ -135,31 +135,46 @@ input[type='checkbox'] {
 					</form>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 
 		<div class="author-filter">
 			<div class="dropdown">
 				<button class="dropandwritebtn">Filter by Author</button>
 				<div class="dropdown-content">
-					<form action="/posts/author">
+					<form action="/posts/searchedposts">
+						<input name="searchArg" type="text">
+						<h4>Tags</h4>
+						<div th:each="tag : ${tagsList}">
+							<input th:value="${tag}" type="checkbox" name="tagName">
+							<label th:text="${tag}"></label>
+						</div>
+						<h4>Authors</h4>
 						<div th:each="author : ${authorList}">
 							<input th:value="${author}" type="checkbox" name="authorName">
 							<label th:text="${author}"></label>
 						</div>
-						<button class="dropandwritebtn" type="submit">submit</button>
+						<button class="dropandwritebtn" type="submit">search</button>
 					</form>
 				</div>
 			</div>
 		</div>
 
 
-		<div class="search">
+		<!-- <div class="search">
 			<form action="/posts/searchedposts">
 				<input name="searchArg" type="text">
+				<div th:each="tag : ${tagsList}">
+					<input th:value="${tag}" type="checkbox" name="tagName"> <label
+						th:text="${tag}"></label>
+				</div>
+				<div th:each="author : ${authorList}">
+					<input th:value="${author}" type="checkbox" name="authorName">
+					<label th:text="${author}"></label>
+				</div>
 				<button class="dropandwritebtn" type="submit">search</button>
 			</form>
-		</div>
+		</div> -->
 
 
 		<div class="dropandwritebtn">
@@ -181,9 +196,7 @@ input[type='checkbox'] {
 						<p id="tags" th:each="tag :${post.getTags()}"
 							th:text="${tag.getName()}"></p>
 						<br>
-					</div> <a
-					th:href="@{/posts/{id}(id=${post.getId()})}">read
-						more</a>
+					</div> <a th:href="@{/posts/{id}(id=${post.getId()})}">read more</a>
 				</td>
 			</tr>
 		</table>

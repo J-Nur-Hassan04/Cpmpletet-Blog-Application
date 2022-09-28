@@ -12,18 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Comment;
 import com.nurhassan.demo.entities.Post;
-import com.nurhassan.demo.repository.ComentsRepository;
-import com.nurhassan.demo.repository.PostsRepository;
 import com.nurhassan.demo.service.CommentService;
 import com.nurhassan.demo.service.PostService;
 
 @Controller
 public class CommentControler {
-
-	@Autowired
-	ComentsRepository commentRepo;
-	@Autowired
-	PostsRepository postRepo;
 
 	@Autowired
 	PostService postService;

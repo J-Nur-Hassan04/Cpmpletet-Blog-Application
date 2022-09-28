@@ -124,7 +124,7 @@ input[type='checkbox'] {
 			</div>
 		</div>
 
-		<div class="tag-filter">
+		<!-- <div class="tag-filter">
 			<div class="dropdown">
 				<button class="dropandwritebtn">Filter by Tags</button>
 				<div class="dropdown-content">
@@ -137,10 +137,10 @@ input[type='checkbox'] {
 					</form>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 
-		<div class="author-filter">
+		<!-- <div class="author-filter">
 			<div class="dropdown">
 				<button class="dropandwritebtn">Filter by Author</button>
 				<div class="dropdown-content">
@@ -153,23 +153,44 @@ input[type='checkbox'] {
 					</form>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 
-		<div class="search">
+		<!-- <div class="search">
 			<form action="/posts/searchedposts">
 				<input name="searchArg" type="text">
 				<button class="dropandwritebtn" type="submit">search</button>
 			</form>
-		</div>
+		</div> -->
 
+<div class="author-filter">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Filter by Author</button>
+				<div class="dropdown-content">
+					<form action="/posts/searchedposts">
+						<input name="searchArg" type="text" th:value = "${searchArg}">
+						<h4>Tags</h4>
+						<div th:each="tag : ${tagsList}">
+							<input th:value="${tag}" type="checkbox" name="tagName">
+							<label th:text="${tag}"></label>
+						</div>
+						<h4>Authors</h4>
+						<div th:each="author : ${authorList}">
+							<input th:value="${author}" type="checkbox" name="authorName">
+							<label th:text="${author}"></label>
+						</div>
+						<button class="dropandwritebtn" type="submit">search</button>
+					</form>
+				</div>
+			</div>
+		</div>
 
 		<div class="dropandwritebtn">
 			<a href="/newpost">Write post</a>
 		</div>
 
 	</div>
-<h4 th:text = "${args}"></h4>
+	<h4 th:text="${args}"></h4>
 	<div class="content">
 		<table>
 			<tr th:each="post : ${postList}">
@@ -183,31 +204,36 @@ input[type='checkbox'] {
 						<p id="tags" th:each="tag :${post.getTags()}"
 							th:text="${tag.getName()}"></p>
 						<br>
-					</div> <a
-					th:href="@{/posts/{id}(id=${post.getId()})}">read
-						more</a>
+					</div> <a th:href="@{/posts/{id}(id=${post.getId()})}">read more</a>
 				</td>
 			</tr>
 		</table>
 
-		<!-- <div class="pagination">
-			<form th:if="${totalPages gt pageNumber + 1}" action="/posts/searchedposts/">
+		<div class="pagination">
+			<form th:if="${totalPages gt pageNumber + 1}"
+				action="/posts/searchedposts/">
 				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
 				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="limit" type="hidden" th:value="${limit}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> <input
+					name="authorName" type="hidden" th:value="${authorName}"> <input
+					name="limit" type="hidden" th:value="${limit}">
 				<button type="submit">Next</button>
 			</form>
 			<form th:if="${pageNumber gt 1}" action="/posts/searchedposts/">
 				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
 				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="limit" type="hidden" th:value="${limit}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> <input
+					name="authorName" type="hidden" th:value="${authorName}"> <input
+					name="limit" type="hidden" th:value="${limit}">
 				<button type="submit">Previous</button>
 			</form>
 			<form th:if="${pageNumber eq 1}" action="/posts/searchedposts">
-			<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> <input
+					name="authorName" type="hidden" th:value="${authorName}">
 				<button type="submit">Previous</button>
 			</form>
-		</div> -->
+		</div>
 
 	</div>
 </body>

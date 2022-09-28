@@ -1,6 +1,7 @@
 package com.nurhassan.demo.controler;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,102 +39,191 @@ public class HomeControler {
 
 	@RequestMapping(value = { "/posts", "/" })
 	public ModelAndView getPages(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView();
 		int start = 0;
 		int limit = 2;
 
 		Page<Post> postList;
 		if (request.getParameter("pageNumber") == null) {
 			postList = postService.getAllPostsOfPage(start, limit);
-			mv.addObject("pageNumber", start);
-			mv.addObject("postList", postList);
-			mv.addObject("totalPages", postList.getTotalPages());
+			modelAndView.addObject("pageNumber", start);
+			modelAndView.addObject("postList", postList);
+			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
 			postList = postService.getAllPostsOfPage(start, limit);
-			mv.addObject("postList", postList);
-			mv.addObject("pageNumber", start);
-			mv.addObject("totalPages", postList.getTotalPages());
+			modelAndView.addObject("postList", postList);
+			modelAndView.addObject("pageNumber", start);
+			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 
-		mv.addObject("authorList", postRepo.getAllAuthors());
-		mv.addObject("tagsList", tagRepo.getAllTags());
-		mv.addObject("limit", limit);
-		mv.setViewName("indexpage");
+		modelAndView.addObject("authorList", postRepo.getAllAuthors());
+		modelAndView.addObject("tagsList", tagRepo.getAllTags());
+		modelAndView.addObject("limit", limit);
+		modelAndView.setViewName("indexpage");
 
-		return mv;
+		return modelAndView;
+	}
+
+	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
+	public ModelAndView getSearchedPosts(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		int start = 0;
+		int limit = 2;
+		Page<Post> postList = null;
+		String filtredTags = request.getParameter("tagName");
+		String filtredAuthors = request.getParameter("authorName");
+		filtredTags = filtredTags == null ? "foundNull" : filtredTags.length() > 0 ?filtredTags : "foundNull";  
+		String searchArg = request.getParameter("searchArg");
+		filtredAuthors = filtredAuthors == null ? "foundNull" : filtredAuthors.length() > 0 ? filtredAuthors : "foundNull";
+
+		if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+			searchArg = searchArg.toUpperCase();
+
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getSearchedPosts(searchArg, start, limit);
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getSearchedPosts(searchArg, start, limit);
+			}
+
+		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			searchArg = request.getParameter("searchArg").toUpperCase();
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
+						filtredAuthors.split(","), start, limit);
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
+						filtredAuthors.split(","), start, limit);
+			}
+
+		}else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+			searchArg = request.getParameter("searchArg").toUpperCase();
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start, limit);
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start, limit);
+			}
+
+		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getSearchedPostsWithTagAndAuthor(start, limit, filtredTags.split(","),
+						filtredAuthors.split(","));
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getSearchedPostsWithTagAndAuthor(start, limit, filtredTags.split(","),
+						filtredAuthors.split(","));
+
+			}
+		}
+		modelAndView.addObject("authorList", postService.getAllAuthor());
+		modelAndView.addObject("tagsList",tagService.getAlltag());
+		modelAndView.addObject("searchArg", searchArg);
+		modelAndView.addObject("limit", limit);
+		modelAndView.setViewName("searchresultpage");
+		modelAndView.addObject("tagName", filtredTags);
+		modelAndView.addObject("authorName", filtredAuthors);
+		modelAndView.addObject("postList", postList);
+		modelAndView.addObject("pageNumber", start);
+		modelAndView.addObject("totalPages", postList.getTotalPages());
+
+		return modelAndView;
+
+	}
+
+	String arrayToString(String[] args) {
+		String result = "";
+		for (String arg : args) {
+			result += arg + ",";
+		}
+		return result.substring(0, result.length() - 1);
 	}
 
 //	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
 //	public ModelAndView getSearchedPosts(HttpServletRequest request) {
-//		ModelAndView mv = new ModelAndView();
+//		ModelAndView modelAndView = new ModelAndView();
 //		String searchArg = request.getParameter("searchArg").toUpperCase();
 //		int start = 0;
 //		int limit = 2;
 //
-//		Page<Posts> postList;
+//		Page<Post> postList;
 //		if (request.getParameter("pageNumber") == null) {
-//			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
-//			mv.addObject("pageNumber", start);
-//			mv.addObject("postList", postList);
-//			mv.addObject("totalPages", postList.getTotalPages());
+//			postList = postService.getSearchedPosts(searchArg, start, limit);
+//			modelAndView.addObject("pageNumber", start);
+//			modelAndView.addObject("postList", postList);
+//			modelAndView.addObject("totalPages", postList.getTotalPages());
 //		}
 //		if (request.getParameter("pageNumber") != null) {
 //			start = Integer.parseInt(request.getParameter("pageNumber"));
-//			postList = postRepo.searchedPosts(searchArg, PageRequest.of(start, limit));
-//			mv.addObject("postList", postList);
-//			mv.addObject("pageNumber", start);
-//			mv.addObject("totalPages", postList.getTotalPages());
+//			postList = postService.getSearchedPosts(searchArg, start, limit);
+//			modelAndView.addObject("postList", postList);
+//			modelAndView.addObject("pageNumber", start);
+//			modelAndView.addObject("totalPages", postList.getTotalPages());
 //		}
-//		mv.addObject("searchArg", searchArg);
-//		mv.addObject("limit", limit);
-//		mv.setViewName("resultpage");
+//		modelAndView.addObject("searchArg", searchArg);
+//		modelAndView.addObject("limit", limit);
+//		modelAndView.setViewName("searchresultpage");
 //
-//		return mv;
+//		return modelAndView;
 //
 //	}
-	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
-	public ModelAndView getSearchedPostsByAny(String searchArg) {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("args", "Search Result Of : " + searchArg);
 
-		searchArg = searchArg.toUpperCase();
-		List<Post> tagNamedPosts = postService.getSearchedPosts(searchArg);
-
-		mv.addObject("authorList", postService.getAllAuthor());
-		mv.addObject("tagsList", tagService.getAlltag());
-		mv.addObject("postList", tagNamedPosts);
-		mv.setViewName("resultpage");
-
-		return mv;
-
-	}
+//	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
+//	public ModelAndView getSearchedPostsByAny(String searchArg) {
+//		ModelAndView modelAndView = new ModelAndView();
+//		modelAndView.addObject("args", "Search Result Of : " + searchArg);
+//
+//		searchArg = searchArg.toUpperCase();
+//		List<Post> tagNamedPosts = postService.getSearchedPosts(searchArg);
+//
+//		modelAndView.addObject("authorList", postService.getAllAuthor());
+//		modelAndView.addObject("tagsList", tagService.getAlltag());
+//		modelAndView.addObject("postList", tagNamedPosts);
+//		modelAndView.setViewName("resultpage");
+//
+//		return modelAndView;
+//
+//	}
 
 	@RequestMapping(value = { "/posts/{id}" }, method = RequestMethod.GET)
 	public ModelAndView readFulPost(@PathVariable("id") int id) {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView();
 		Post post = postService.getPostById(id);
 
-		mv.addObject("post", post);
-		mv.setViewName("fullcontentpage");
+		modelAndView.addObject("post", post);
+		modelAndView.setViewName("fullcontentpage");
 
-		return mv;
+		return modelAndView;
 	}
 
 	@RequestMapping(value = { "/posts/drafts" }, method = RequestMethod.GET)
 	public ModelAndView getDrafts() {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView();
 
-		mv.addObject("postList", postService.getAllPosts());
-		mv.setViewName("draftspage");
+		modelAndView.addObject("postList", postService.getAllPosts());
+		modelAndView.setViewName("draftspage");
 
-		return mv;
+		return modelAndView;
 	}
 
 	@RequestMapping(value = { "/posts/olderposts" }, method = RequestMethod.GET)
 	public ModelAndView getSortedHomePageDesc(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView();
 
 		int start = 0;
 		int limit = 2;
@@ -142,29 +232,29 @@ public class HomeControler {
 
 		if (request.getParameter("pageNumber") == null) {
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "ASC");
-			mv.addObject("pageNumber", start);
-			mv.addObject("postList", postList);
-			mv.addObject("totalPages", postList.getTotalPages());
+			modelAndView.addObject("pageNumber", start);
+			modelAndView.addObject("postList", postList);
+			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "ASC");
-			mv.addObject("postList", postList);
-			mv.addObject("pageNumber", start);
-			mv.addObject("totalPages", postList.getTotalPages());
+			modelAndView.addObject("postList", postList);
+			modelAndView.addObject("pageNumber", start);
+			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 
-		mv.addObject("authorList", postService.getAllAuthor());
-		mv.addObject("tagsList", tagService.getAlltag());
-		mv.addObject("limit", limit);
-		mv.setViewName("indexpage");
+		modelAndView.addObject("authorList", postService.getAllAuthor());
+		modelAndView.addObject("tagsList", tagService.getAlltag());
+		modelAndView.addObject("limit", limit);
+		modelAndView.setViewName("indexpage");
 
-		return mv;
+		return modelAndView;
 	}
 
 	@RequestMapping(value = { "/posts/recentposts" }, method = RequestMethod.GET)
 	public ModelAndView getSortedHomePageAsc(HttpServletRequest request) {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView();
 
 		int start = 0;
 		int limit = 2;
@@ -172,63 +262,61 @@ public class HomeControler {
 		Page<Post> postList;
 		if (request.getParameter("pageNumber") == null) {
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "DESC");
-			mv.addObject("pageNumber", start);
-			mv.addObject("postList", postList);
-			mv.addObject("totalPages", postList.getTotalPages());
+			modelAndView.addObject("pageNumber", start);
+			modelAndView.addObject("postList", postList);
+			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "DESC");
-			mv.addObject("postList", postList);
-			mv.addObject("pageNumber", start);
-			mv.addObject("totalPages", postList.getTotalPages());
+			modelAndView.addObject("postList", postList);
+			modelAndView.addObject("pageNumber", start);
+			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 
-		mv.addObject("authorList", postService.getAllAuthor());
-		mv.addObject("tagsList", tagService.getAlltag());
-		mv.addObject("limit", limit);
-		mv.setViewName("indexpage");
+		modelAndView.addObject("authorList", postService.getAllAuthor());
+		modelAndView.addObject("tagsList", tagService.getAlltag());
+		modelAndView.addObject("limit", limit);
+		modelAndView.setViewName("indexpage");
 
-		return mv;
+		return modelAndView;
 	}
-	
 
 //refactored
-	@RequestMapping(value = { "/posts/tag" }, method = RequestMethod.GET)
-	public ModelAndView getTagedPosts(
-			@RequestParam(name = "tagName", required = false, defaultValue = "#") String[] tagName) {
-		ModelAndView mv = new ModelAndView();
-
-		mv.addObject("postList", postRepo.findAllByTagsArray(tagName));
-		mv.addObject("authorList", postRepo.getAllAuthors());
-		mv.addObject("args", "Filtred by tag : " + Arrays.toString(tagName));
-		mv.addObject("tagsList", tagRepo.getAllTags());
-		mv.setViewName("resultpage");
-
-		return mv;
-	}
-
-	@RequestMapping(value = { "/posts/author" }, method = RequestMethod.GET)
-	public ModelAndView getFilteredAuthor(
-			@RequestParam(name = "authorName", required = false, defaultValue = "author") String[] authors) {
-		ModelAndView mv = new ModelAndView();
-
-		mv.addObject("postList", postRepo.findAllByAuthorArray(authors));
-
-		mv.addObject("authorList", postRepo.getAllAuthors());
-		mv.addObject("args", "Filtred by Author : " + Arrays.toString(authors));
-		mv.addObject("tagsList", tagRepo.getAllTags());
-		mv.setViewName("resultpage");
-
-		return mv;
-	}
+//	@RequestMapping(value = { "/posts/tag" }, method = RequestMethod.GET)
+//	public ModelAndView getTagedPosts(
+//			@RequestParam(name = "tagName", required = false, defaultValue = "#") String[] tagName) {
+//		ModelAndView modelAndView = new ModelAndView();
+//
+//		modelAndView.addObject("postList", postRepo.findAllByTagsArray(tagName));
+//		modelAndView.addObject("authorList", postRepo.getAllAuthors());
+//		modelAndView.addObject("args", "Filtred by tag : " + Arrays.toString(tagName));
+//		modelAndView.addObject("tagsList", tagRepo.getAllTags());
+//		modelAndView.setViewName("resultpage");
+//
+//		return modelAndView;
+//	}
+//
+//	@RequestMapping(value = { "/posts/author" }, method = RequestMethod.GET)
+//	public ModelAndView getFilteredAuthor(
+//			@RequestParam(name = "authorName", required = false, defaultValue = "author") String[] authors) {
+//		ModelAndView modelAndView = new ModelAndView();
+//
+//		modelAndView.addObject("postList", postRepo.findAllByAuthorArray(authors));
+//		modelAndView.addObject("authorList", postRepo.getAllAuthors());
+//		modelAndView.addObject("args", "Filtred by Author : " + Arrays.toString(authors));
+//		modelAndView.addObject("tagsList", tagRepo.getAllTags());
+//		modelAndView.setViewName("resultpage");
+//
+//		return modelAndView;
+//	}
 
 	@RequestMapping("/login")
 	public ModelAndView getLoginForm() {
-		ModelAndView mv = new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView();
 
-		mv.setViewName("login");
+		modelAndView.setViewName("login");
 
-		return mv;
+		return modelAndView;
 	}
 }

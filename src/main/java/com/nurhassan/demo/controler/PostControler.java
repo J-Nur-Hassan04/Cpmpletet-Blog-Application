@@ -65,7 +65,6 @@ public class PostControler {
 		}
 
 		post.setTags(newTags);
-//		postRepo.save(post);
 		postService.savePost(post);
 
 		return "redirect:/";
