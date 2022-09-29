@@ -61,14 +61,14 @@ public class HomeControler {
 		int limit = 2;
 		Page<Post> postList = null;
 		String filtredTags = request.getParameter("tagName");
+		filtredTags = filtredTags == null ? "foundNull" : filtredTags.length() > 0 ? filtredTags : "foundNull";
 		String filtredAuthors = request.getParameter("authorName");
-		filtredTags = filtredTags == null ? "foundNull" : filtredTags.length() > 0 ?filtredTags : "foundNull";  
+		filtredAuthors = filtredAuthors == null ? "foundNull"
+				: filtredAuthors.length() > 0 ? filtredAuthors : "foundNull";
 		String searchArg = request.getParameter("searchArg");
-		filtredAuthors = filtredAuthors == null ? "foundNull" : filtredAuthors.length() > 0 ? filtredAuthors : "foundNull";
 
 		if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
 			searchArg = searchArg.toUpperCase();
-
 			if (request.getParameter("pageNumber") == null) {
 				postList = postService.getSearchedPosts(searchArg, start, limit);
 			}
@@ -76,12 +76,10 @@ public class HomeControler {
 				start = Integer.parseInt(request.getParameter("pageNumber"));
 				postList = postService.getSearchedPosts(searchArg, start, limit);
 			}
-
 		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
 			searchArg = request.getParameter("searchArg").toUpperCase();
 			filtredTags = arrayToString(request.getParameterValues("tagName"));
 			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
-
 			if (request.getParameter("pageNumber") == null) {
 				postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
 						filtredAuthors.split(","), start, limit);
@@ -91,17 +89,17 @@ public class HomeControler {
 				postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
 						filtredAuthors.split(","), start, limit);
 			}
-
-		}else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
 			searchArg = request.getParameter("searchArg").toUpperCase();
 			filtredTags = arrayToString(request.getParameterValues("tagName"));
-
 			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start, limit);
+				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start,
+						limit);
 			}
 			if (request.getParameter("pageNumber") != null) {
 				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start, limit);
+				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start,
+						limit);
 			}
 
 		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
@@ -118,9 +116,40 @@ public class HomeControler {
 						filtredAuthors.split(","));
 
 			}
+		} else if (searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getAllPostsByAuthor(filtredAuthors.split(","), start, limit);
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getAllPostsByAuthor(filtredAuthors.split(","), start, limit);
+			}
+		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getSearchedPostsByTags(filtredTags.split(","), start, limit);
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getSearchedPostsByTags(filtredTags.split(","), start, limit);
+			}
+
+		} else if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			searchArg = searchArg.toUpperCase();
+			filtredAuthors = arrayToString(request.getParameterValues("searchArg"));
+			if (request.getParameter("pageNumber") == null) {
+				postList = postService.getSearchedPostsBySearchArgAndAuthors(searchArg, filtredAuthors.split(","),
+						start, limit);
+			}
+			if (request.getParameter("pageNumber") != null) {
+				start = Integer.parseInt(request.getParameter("pageNumber"));
+				postList = postService.getSearchedPostsBySearchArgAndAuthors(searchArg, filtredAuthors.split(","),
+						start, limit);
+			}
 		}
 		modelAndView.addObject("authorList", postService.getAllAuthor());
-		modelAndView.addObject("tagsList",tagService.getAlltag());
+		modelAndView.addObject("tagsList", tagService.getAlltag());
 		modelAndView.addObject("searchArg", searchArg);
 		modelAndView.addObject("limit", limit);
 		modelAndView.setViewName("searchresultpage");

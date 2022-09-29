@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nurhassan.demo.entities.Comment;
-import com.nurhassan.demo.repository.ComentsRepository;
+import com.nurhassan.demo.repository.ComentRepository;
 
 @Service
 public class CommentServiceImplementation implements CommentService {
 
 	@Autowired
-	private ComentsRepository commentRepository;
+	private ComentRepository commentRepository;
 	@Override
 	public Comment getCommentById(int id) {
 		Comment comment = commentRepository.findById(id).orElse(null);

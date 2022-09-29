@@ -20,6 +20,12 @@ public interface PostService {
 	public List<String> getAllAuthor();
 
 	public List<Post> getAllPosts();
+	
+	public Page<Post> getAllPostsByAuthor(String[] author,int start, int limit);
+	
+	public Page<Post> getSearchedPostsByTags(String[] tags, int start, int limit);
+	
+	public Page<Post> getSearchedPostsBySearchArgAndAuthors(String searchArg, String[] authors, int start, int limit);
 
 	public Page<Post> getSortedPosts(int start, int limit, String column, String basic);
 	

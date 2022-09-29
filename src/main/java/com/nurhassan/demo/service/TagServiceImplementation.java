@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nurhassan.demo.entities.Tag;
-import com.nurhassan.demo.repository.TagsRepository;
+import com.nurhassan.demo.repository.TagRepository;
 
 @Service
 public class TagServiceImplementation implements TagService {
 
 	@Autowired
-	private TagsRepository tagRepository;
+	private TagRepository tagRepository;
 	
 	@Override
 	public Tag getTagByName(String tagName) {

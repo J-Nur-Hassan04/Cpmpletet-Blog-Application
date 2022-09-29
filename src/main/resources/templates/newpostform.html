@@ -49,9 +49,6 @@ h1 {
 }
 </style>
 	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]</h1>
-	<form th:action="@{/logout}" method="post">
-		<input type="submit" value="Sign Out" />
-	</form>
 	<form action="#" th:action="@{/newpost/savenewpost}"
 		style="text-align: center;" method="post">
 		<h1>Write your blog post</h1>

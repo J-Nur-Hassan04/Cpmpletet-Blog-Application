@@ -10,14 +10,14 @@ import org.springframework.data.repository.query.Param;
 
 import com.nurhassan.demo.entities.Post;
 
-public interface PostsRepository extends JpaRepository<Post, Integer> {
+public interface PostRepository extends JpaRepository<Post, Integer> {
+
+	Page<Post> findAll(Pageable pageable);
 
 	@Query(value = "select distinct author from posts", nativeQuery = true)
 	public List<String> getAllAuthors();
 
 	public List<Post> findAllByOrderByPublishedAtDesc();
-
-	public List<Post> findAllByAuthor(String author);
 
 	public List<Post> findAllByTagsName(String name);
 
@@ -45,7 +45,8 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 			+ "Post post "
 			+ "join "
 			+ "post.tags tag "
-			+ "where (tag.name) in (:tags) and "
+			+ "where (tag.name) in (:tags) "
+			+ "and "
 			+ "upper (post.author) "
 			+ "like concat('%',(:arg),'%') "
 			+ "or "
@@ -92,11 +93,44 @@ public interface PostsRepository extends JpaRepository<Post, Integer> {
 			@Param("tags") String[] tags,@Param("authors") String[] authors,Pageable pageable);
 	
 
-	@Query("SELECT post from Post post join post.tags tag where (tag.name) = (:tags)")
+	@Query("select distinct post "
+			+ "from "
+			+ "Post post "
+			+ "where "
+			+ "post.author in (:authors)")
+	Page<Post> searchedPostsByAuthors(@Param("authors") String[] authors, Pageable pageable);
+	
+	@Query("select distinct post "
+			+ "from "
+			+ "Post post "
+			+ "join "
+			+ "post.tags tag "
+			+ "where "
+			+ "tag.name in (:tags)")
+	Page<Post> searchedPostsByTags(@Param("tags") String[] tags, Pageable pageable);
+	
+	@Query("select distinct post "
+			+ "from "
+			+ "Post post "
+			+ "where "
+			+ "(post.author) in (:authors) and "
+			+ "upper (post.title) like concat('%',(:arg),'%') "
+			+ "or "
+			+ "upper (post.content) like concat('%',(:arg),'%')")
+	Page<Post> searchedPostsBySearchArgAndAuthors(@Param("arg")String searchArg,@Param("authors") String[] authors, Pageable pageable);
+	
+	@Query("SELECT post "
+			+ "from "
+			+ "Post post "
+			+ "join "
+			+ "post.tags tag "
+			+ "where (tag.name) = (:tags)")
 	List<Post> findAllByTagsArray(@Param("tags") String[] tags);
 
-	@Query("select post from Post post where (post.author) in (:authors)")
+	@Query("select post "
+			+ "from "
+			+ "Post post "
+			+ "where (post.author) in (:authors)")
 	List<Post> findAllByAuthorArray(String[] authors);
 
-	Page<Post> findAll(Pageable pageable);
 }
