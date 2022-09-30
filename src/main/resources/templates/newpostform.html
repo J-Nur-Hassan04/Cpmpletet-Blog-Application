@@ -48,20 +48,24 @@ h1 {
 	margin: 10px;
 }
 </style>
-	<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]</h1>
+	<h1 th:inline="text">Hello [[${#request.userPrincipal.principal.name}]]</h1>
 	<form action="#" th:action="@{/newpost/savenewpost}"
 		style="text-align: center;" method="post">
 		<h1>Write your blog post</h1>
-		<h4 th:inline="text">Author : [[${#httpServletRequest.remoteUser}]]</h4>
+		<h4 th:inline="text">Author : [[${#request.userPrincipal.principal.name}]]</h4>
+		<!-- <h4 th:inline="text">Id : [[${#request.userPrincipal.principal.id}]]</h4> -->
+		
+		
+		<!-- <span th:text ="${#request.userPrincipal.principal.password}"></span> -->
+		
 		<div class="blogform">
 			<input type="text" name="title" placeholder="Enter Title"
 				required="required"><br>
 			<textarea name="content" rows="15" cols="28"
 				placeholder="Write blog here" required="required"></textarea>
 			<br> 
-			<!-- <input type="text" name="author" placeholder="Auhor name"
-				required="required"><br> -->
-				<input type="hidden" name="author" th:value="${#httpServletRequest.remoteUser}">
+				<input type="hidden" name="author" th:value="${#request.userPrincipal.principal.name}">
+				<input type="hidden" name = "uid" th:value ="${#request.userPrincipal.principal.id}">
 		</div>
 		<div class="tagsform">
 			<input type="text" list="tags" name="tagsname" multiple="multiple"

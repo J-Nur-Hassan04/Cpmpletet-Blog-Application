@@ -6,4 +6,5 @@ import com.nurhassan.demo.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	User findByEmail(String usreName);
 }

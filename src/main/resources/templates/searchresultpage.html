@@ -63,7 +63,7 @@ table td a {
 	display: none;
 	position: absolute;
 	background-color: #f1f1f1;
-	min-width: 300px;
+	min-width: 500px;
 	max-height: 400px;
 	overflow: scroll;
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -130,6 +130,7 @@ input[type='checkbox'] {
 				<div class="dropdown-content">
 					<form action="/posts/searchedposts">
 						<input name="searchArg" type="text" th:value="${searchArg}">
+						<button class="dropandwritebtn" type="submit">search</button>
 						<h4>Tags</h4>
 						<div th:each="tag : ${tagsList}">
 							<input th:value="${tag}" type="checkbox" name="tagName">
@@ -140,7 +141,6 @@ input[type='checkbox'] {
 							<input th:value="${author}" type="checkbox" name="authorName">
 							<label th:text="${author}"></label>
 						</div>
-						<button class="dropandwritebtn" type="submit">search</button>
 					</form>
 				</div>
 			</div>

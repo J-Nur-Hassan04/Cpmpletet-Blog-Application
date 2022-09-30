@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -11,11 +13,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "UserData")
 public class User {
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_seq")
 	private int id;
 	private String name;
 	private String email;
 	private String password;
+	private String role;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Post> posts;
@@ -60,4 +65,14 @@ public class User {
 		this.posts = posts;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
+
+	
 }

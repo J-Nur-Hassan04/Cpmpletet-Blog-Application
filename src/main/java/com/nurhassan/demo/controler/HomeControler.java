@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Post;
+import com.nurhassan.demo.entities.User;
 import com.nurhassan.demo.service.PostService;
 import com.nurhassan.demo.service.TagService;
+import com.nurhassan.demo.service.UserService;
 
 @RestController
 @Controller
@@ -25,6 +27,9 @@ public class HomeControler {
 	@Autowired
 	private TagService tagService;
 
+	@Autowired
+	private UserService userService;
+	
 	@RequestMapping(value = { "/posts", "/" })
 	public ModelAndView getPages(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -199,22 +204,19 @@ public class HomeControler {
 		int start = 0;
 		int limit = 2;
 
-		Page<Post> postList;
+		Page<Post> postList = null;
 
 		if (request.getParameter("pageNumber") == null) {
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "ASC");
-			modelAndView.addObject("pageNumber", start);
-			modelAndView.addObject("postList", postList);
-			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "ASC");
-			modelAndView.addObject("postList", postList);
-			modelAndView.addObject("pageNumber", start);
-			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 
+		modelAndView.addObject("postList", postList);
+		modelAndView.addObject("pageNumber", start);
+		modelAndView.addObject("totalPages", postList.getTotalPages());
 		modelAndView.addObject("authorList", postService.getAllAuthor());
 		modelAndView.addObject("tagsList", tagService.getAlltag());
 		modelAndView.addObject("limit", limit);
@@ -230,21 +232,18 @@ public class HomeControler {
 		int start = 0;
 		int limit = 2;
 
-		Page<Post> postList;
+		Page<Post> postList = null;
 		if (request.getParameter("pageNumber") == null) {
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "DESC");
-			modelAndView.addObject("pageNumber", start);
-			modelAndView.addObject("postList", postList);
-			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 		if (request.getParameter("pageNumber") != null) {
 			start = Integer.parseInt(request.getParameter("pageNumber"));
 			postList = postService.getSortedPosts(start, limit, "publishedAt", "DESC");
-			modelAndView.addObject("postList", postList);
-			modelAndView.addObject("pageNumber", start);
-			modelAndView.addObject("totalPages", postList.getTotalPages());
 		}
 
+		modelAndView.addObject("postList", postList);
+		modelAndView.addObject("pageNumber", start);
+		modelAndView.addObject("totalPages", postList.getTotalPages());
 		modelAndView.addObject("authorList", postService.getAllAuthor());
 		modelAndView.addObject("tagsList", tagService.getAlltag());
 		modelAndView.addObject("limit", limit);
@@ -261,4 +260,26 @@ public class HomeControler {
 
 		return modelAndView;
 	}
+	
+	@RequestMapping("/singup")
+	public ModelAndView getSingUpForm()
+	{
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("singup");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = {"/singup/adduser"}, method = RequestMethod.POST)
+	public ModelAndView addUser(User user)
+	{	
+		User u = new User();
+		u.setId(11);
+		u.setName(user.getName());
+		u.setEmail(user.getEmail());
+		u.setPassword(user.getPassword());
+		userService.saveUserDetails(u);
+	
+		return new ModelAndView("redirect:/");
+	}
+	
 }

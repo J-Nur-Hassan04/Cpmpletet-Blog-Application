@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Post;
 import com.nurhassan.demo.entities.Tag;
+import com.nurhassan.demo.repository.UserRepository;
 import com.nurhassan.demo.service.PostService;
 import com.nurhassan.demo.service.TagService;
 
@@ -26,6 +27,9 @@ public class PostControler {
 
 	@Autowired
 	private TagService tagService;
+	
+	@Autowired
+	UserRepository userRepository;
 
 	@RequestMapping(value = { "/newpost" })
 	public ModelAndView getNewBlogForm() {
@@ -38,7 +42,7 @@ public class PostControler {
 
 	@RequestMapping(value = { "/newpost/savenewpost" }, method = RequestMethod.POST)
 	public String saveNewPost(Post post, @RequestParam("tagsname") String postTags,
-			@RequestParam("postType") String postType) {
+			@RequestParam("postType") String postType, @RequestParam("uid") int userId) {
 
 		post.setPublishedAt(new Date());
 		post.setCreatedAt(new Date());
@@ -65,6 +69,8 @@ public class PostControler {
 		}
 
 		post.setTags(newTags);
+		
+		post.setUser(userRepository.findById(userId).orElse(null));
 		postService.savePost(post);
 
 		return "redirect:/";
