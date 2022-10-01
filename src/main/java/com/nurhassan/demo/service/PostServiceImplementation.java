@@ -112,4 +112,10 @@ public class PostServiceImplementation implements PostService {
 		return posts;
 	}
 
+	@Override
+	public List<Post> getDraftsOfUser(int id) {
+		List<Post> posts = postRepository.findDraftsByUId(id);
+		return posts;
+	}
+
 }

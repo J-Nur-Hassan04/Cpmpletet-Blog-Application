@@ -8,22 +8,23 @@ import org.springframework.stereotype.Service;
 
 import com.nurhassan.demo.entities.User;
 import com.nurhassan.demo.repository.UserRepository;
+import com.nurhassan.demo.service.UserService;
 
  @Service
 public class MyUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	UserRepository userRepository;
+	UserService userService;
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
 		
-		User u = userRepository.findByEmail(username);
+		User user = userService.getUserByEmail(userEmail);
 		
-		if(u == null)
+		if(user == null)
 			throw new UsernameNotFoundException("user not found");
 		
 		
-		return new UserPrincipal_(u);
+		return new UserPrincipal(user);
 	}
 
 }

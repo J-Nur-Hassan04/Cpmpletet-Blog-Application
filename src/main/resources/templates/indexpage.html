@@ -2,134 +2,128 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Insert title here</title>
 </head>
 
 <body>
 	<style>
-		.header {
-			display: flex;
-			justify-content: space-between;
-			margin-left: 50px;
-			margin-right: 50px;
-		}
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin-left: 50px;
+	margin-right: 50px;
+}
 
-		.search input {
-			width: 300px;
-			height: 35px;
-		}
+.search input {
+	width: 300px;
+	height: 35px;
+}
 
-		table {
-			max-width: 68em;
-			margin: auto;
-		}
+table {
+	max-width: 68em;
+	margin: auto;
+}
 
-		td {
-			padding: 10px;
-			border: 2px solid black;
-			margin: 5px;
-		}
+td {
+	padding: 10px;
+	border: 2px solid black;
+	margin: 5px;
+}
 
-		table td a {
-			float: right;
-		}
+table td a {
+	float: right;
+}
 
-		.tags {
-			display: flex;
-		}
+.tags {
+	display: flex;
+}
 
-		.tags p {
-			margin: 3px;
-		}
+.tags p {
+	margin: 3px;
+}
 
-		.dropandwritebtn {
-			background-color: #04AA6D;
-			color: white;
-			padding: 13px;
-			font-size: 13px;
-			border: none;
-			margin-bottom: 10px;
-		}
+.dropandwritebtn {
+	background-color: #04AA6D;
+	color: white;
+	padding: 13px;
+	font-size: 13px;
+	border: none;
+	margin-bottom: 10px;
+}
 
-		.dropandwritebtn a {
-			margin: 0;
-		}
+.dropandwritebtn a {
+	margin: 0;
+}
 
-		.dropdown {
-			position: relative;
-			display: inline-block;
-		}
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
 
-		.dropdown-content {
-			display: none;
-			position: absolute;
-			background-color: #f1f1f1;
-			min-width: 500px;
-			max-height: 400px;
-			overflow: scroll;
-			box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-			z-index: 1;
-			box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-		}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 500px;
+	max-height: 400px;
+	overflow: scroll;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
 
-		.dropdown-content input {
-			margin: 5px;
-			font-size: 25px;
-		}
+.dropdown-content input {
+	margin: 5px;
+	font-size: 25px;
+}
 
-		.dropdown-content label {
-			margin: 5px;
-			font-size: 20px;
-		}
+.dropdown-content label {
+	margin: 5px;
+	font-size: 20px;
+}
 
-		.dropdown-content a {
-			color: black;
-			padding: 12px 16px;
-			text-decoration: none;
-			display: block;
-		}
+.dropdown-content a {
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
 
-		.dropdown-content a:hover {
-			background-color: #ddd;
-		}
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
 
-		.dropdown:hover .dropdown-content {
-			display: block;
-		}
+.dropdown:hover .dropdown-content {
+	display: block;
+}
 
-		.dropdown:hover .dropbtn {
-			margin: 10px;
-			background-color: #3e8e41;
-		}
+.dropdown:hover .dropbtn {
+	margin: 10px;
+	background-color: #3e8e41;
+}
 
-		label {
-			margin: 5px;
-		}
+label {
+	margin: 5px;
+}
 
-		input[type='checkbox'] {
-			transform: scale(1.5);
-			margin: 10px;
-		}
-	</style>
+input[type='checkbox'] {
+	transform: scale(1.5);
+	margin: 10px;
+}
+</style>
 	<div class="header">
 		<div class="options">
 			<div class="dropdown">
 				<button class="dropandwritebtn">Dropdown</button>
 				<div class="dropdown-content">
-					<a href="#" th:href="@{/posts/}">Home</a> <a href="#" th:href="@{/posts/drafts}">See drafts</a> <a
-						th:href="@{/posts/olderposts}">see older posts</a> <a th:href="@{/posts/recentposts}">see most
-						recent posts</a>
+					<a href="#" th:href="@{/posts/}">Home</a> <a sec:authorize="isAuthenticated()" href="#"
+						th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See drafts</a> <a
+						th:href="@{/posts/olderposts}">see older posts</a> <a
+						th:href="@{/posts/recentposts}">see most recent posts</a>
 				</div>
 			</div>
 		</div>
-
-
-
-<a href="#" th:href="@{/singup}">sing up</a>
-
-
-
 		<div class="author-filter">
 			<div class="dropdown">
 				<button class="dropandwritebtn">search or filter</button>
@@ -158,13 +152,17 @@
 			<a href="/newpost">Write post</a>
 		</div>
 
-		<div style="display:flex;">
-			<form th:action="@{/loogin}" method="post">
-				<input class="dropandwritebtn" type="submit" value="Log in" />
-			</form>
-			<form th:action="@{/logout}" method="post">
-				<input class="dropandwritebtn" type="submit" value="Logout" />
-			</form>
+		<div style="display: flex;">
+			<div class="loginbtn" sec:authorize="!isAuthenticated()">
+				<form th:action="@{/login}">
+					<input class="dropandwritebtn" type="submit" value="Log in" />
+				</form>
+			</div>
+			<div class="logoutbtn" sec:authorize="isAuthenticated()">
+				<form th:action="@{/logout}" method="post">
+					<input class="dropandwritebtn" type="submit" value="Logout" />
+				</form>
+			</div>
 		</div>
 
 	</div>
@@ -179,7 +177,8 @@
 					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
 					<div class="tags">
 						<p>Tags :</p>
-						<p id="tags" th:each="tag :${post.getTags()}" th:text="${tag.getName()}"></p>
+						<p id="tags" th:each="tag :${post.getTags()}"
+							th:text="${tag.getName()}"></p>
 						<br>
 					</div> <a th:href="@{/posts/{id}(id=${post.getId()})}">read more</a>
 				</td>

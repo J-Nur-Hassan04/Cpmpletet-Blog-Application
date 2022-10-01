@@ -12,6 +12,7 @@ import com.nurhassan.demo.entities.Post;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
+	@Query("select post from Post post where is_published = true")
 	Page<Post> findAll(Pageable pageable);
 
 	@Query(value = "select distinct author from posts", nativeQuery = true)
@@ -132,5 +133,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "Post post "
 			+ "where (post.author) in (:authors)")
 	List<Post> findAllByAuthorArray(String[] authors);
+	
+	@Query("select post from Post post where user_id = :userId and is_published = false")
+	List<Post> findDraftsByUId(@Param("userId") int userId);
 
 }

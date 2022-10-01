@@ -9,71 +9,63 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.nurhassan.demo.entities.User;
 
-public class UserPrincipal_ implements UserDetails {
+public class UserPrincipal implements UserDetails {
 
-	
-	
 	User user;
-	
-	
-	
-	public UserPrincipal_(User user) {
+
+	public UserPrincipal(User user) {
 		this.user = user;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return Collections.singleton(new SimpleGrantedAuthority("USER"));
+
+		return Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
 	}
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
 		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
 		return user.getEmail();
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
-	public int getId()
-	{
+	public int getId() {
 		return user.getId();
 	}
-	
-	public String getName()
-	{
+
+	public String getName() {
 		return user.getName();
 	}
-	public String getEmail()
-	{
+
+	public String getEmail() {
 		return this.user.getEmail();
+	}
+
+	public String getRole() {
+		return user.getRole();
 	}
 }

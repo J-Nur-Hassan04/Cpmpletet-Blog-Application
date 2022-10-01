@@ -6,13 +6,18 @@
 </head>
 <body>
 
-<h1>Sing Up with us</h1>
+	<h1>Sing Up with us</h1>
 
-	<form action="#" th:action="@{/singup/adduser}" method="post">
-		<input name="name" type="text"> <input name="email"
-			type="email"> <input name="password" type="password">
-		<button type="submit">Sing up</button>
-	</form>
+	<div>
+		<form action="#" th:action="@{/singup/adduser}" method="post">
+			<input name="name" type="text" placeholder="---Enter Your Name---">
+			<input name="email" type="email"
+				placeholder="----Enter you Email-----"> <input
+				name="password" type="password"
+				placeholder="----Create Password-----">
+			<button type="submit">Sing up</button>
+		</form>
+	</div>
 
 </body>
 </html>

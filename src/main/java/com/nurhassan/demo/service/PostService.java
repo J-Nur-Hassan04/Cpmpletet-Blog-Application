@@ -12,6 +12,8 @@ public interface PostService {
 	public Post getPostById(int id);
 
 	public void deletePost(Post post);
+	
+	public List<Post> getDraftsOfUser(int id);
 
 	public Page<Post> getAllPostsOfPage(int start, int limit);
 

@@ -1,0 +1,9 @@
+http://localhost:8080/posts/  --->permitAll()
+http://localhost:8080/posts/olderposts -->permitAll()
+http://localhost:8080/posts/recentposts --->permitAll()
+http://localhost:8080/singup ---> permitAll()
+http://localhost:8080/posts/searchedposts -->permitAll()
+http://localhost:8080/posts/drafts --->authenticatedUser();
+http://localhost:8080/newpost --->authenticatedUser()
+
+http://localhost:8080/posts/1/update ----> can update ownposts and ADMIN

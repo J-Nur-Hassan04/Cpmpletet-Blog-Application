@@ -187,11 +187,11 @@ public class HomeControler {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = { "/posts/drafts" }, method = RequestMethod.GET)
-	public ModelAndView getDrafts() {
+	@RequestMapping(value = { "/user/{uid}/drafts" }, method = RequestMethod.GET)
+	public ModelAndView getDrafts(@PathVariable("uid")int userId) {
 		ModelAndView modelAndView = new ModelAndView();
-
-		modelAndView.addObject("postList", postService.getAllPosts());
+		
+		modelAndView.addObject("postList", postService.getDraftsOfUser(userId));
 		modelAndView.setViewName("draftspage");
 
 		return modelAndView;
@@ -273,10 +273,10 @@ public class HomeControler {
 	public ModelAndView addUser(User user)
 	{	
 		User u = new User();
-		u.setId(11);
 		u.setName(user.getName());
 		u.setEmail(user.getEmail());
 		u.setPassword(user.getPassword());
+		u.setRole("AUTHOR");
 		userService.saveUserDetails(u);
 	
 		return new ModelAndView("redirect:/");
