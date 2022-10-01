@@ -138,7 +138,7 @@ public class PostControler {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = { "/posts/{id}/delete" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/posts/delete/{id}" }, method = RequestMethod.POST)
 	public ModelAndView deletePost(@PathVariable("id") int id) {
 		Post postToBeDelete = postService.getPostById(id);
 		postService.deletePost(postToBeDelete);

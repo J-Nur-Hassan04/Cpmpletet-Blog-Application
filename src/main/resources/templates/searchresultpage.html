@@ -116,10 +116,10 @@ input[type='checkbox'] {
 			<div class="dropdown">
 				<button class="dropandwritebtn">Dropdown</button>
 				<div class="dropdown-content">
-					<a href="#" th:href="@{/posts/}">Home</a> <a sec:authorize="isAuthenticated()" href="#"
-						th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See drafts</a> <a
-						th:href="@{/posts/olderposts}">see older posts</a> <a
-						th:href="@{/posts/recentposts}">see most recent posts</a>
+					<a href="#" th:href="@{/posts/}">Home</a> 
+					<a sec:authorize="isAuthenticated()" href="#" th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See drafts</a> 
+					<a th:href="@{/posts/olderposts}">see older posts</a> 
+					<a th:href="@{/posts/recentposts}">see most recent posts</a>
 				</div>
 			</div>
 		</div>
@@ -175,23 +175,23 @@ input[type='checkbox'] {
 				action="/posts/searchedposts/">
 				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
 				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> <input
-					name="authorName" type="hidden" th:value="${authorName}"> <input
-					name="limit" type="hidden" th:value="${limit}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> 
+				<input name="authorName" type="hidden" th:value="${authorName}"> 
+				<input name="limit" type="hidden" th:value="${limit}">
 				<button type="submit">Next</button>
 			</form>
 			<form th:if="${pageNumber gt 1}" action="/posts/searchedposts/">
 				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
 				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> <input
-					name="authorName" type="hidden" th:value="${authorName}"> <input
-					name="limit" type="hidden" th:value="${limit}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> 
+				<input name="authorName" type="hidden" th:value="${authorName}"> 
+				<input name="limit" type="hidden" th:value="${limit}">
 				<button type="submit">Previous</button>
 			</form>
 			<form th:if="${pageNumber eq 1}" action="/posts/searchedposts">
 				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> <input
-					name="authorName" type="hidden" th:value="${authorName}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> 
+				<input name="authorName" type="hidden" th:value="${authorName}">
 				<button type="submit">Previous</button>
 			</form>
 		</div>

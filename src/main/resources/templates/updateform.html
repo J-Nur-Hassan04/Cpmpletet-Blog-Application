@@ -54,28 +54,24 @@
 		<h4 th:inline="text">Author : [[${#request.userPrincipal.principal.name}]]</h4>
 		<div class="blogform">
 			<input th:value="${post.getTitle()}" type="text" name="title" placeholder="Enter Title" required="required"><br>
-		<textarea th:utext="${#strings.replace(post.getContent(),'<br>','&#10;')}" name="content" rows="15" cols="28"
-			placeholder="Write blog here" required="required"></textarea>
-		<br> <input th:value="${#request.userPrincipal.principal.name}" type="hidden" name="author" placeholder="Auhor name"
-			required="required"><br>
+			<textarea th:utext="${#strings.replace(post.getContent(),'<br>','&#10;')}" name="content" rows="15" cols="28" placeholder="Write blog here" required="required"></textarea>
+			<br> 
+			<input th:value="${#request.userPrincipal.principal.name}" type="hidden" name="author" placeholder="Auhor name" required="required"><br>
 		</div>
 
-
-
 		<div class="tagsform">
-			<input th:value="${tags}" type="text" list="tags" name="tagsname" multiple="multiple"
-				placeholder="example : #tag1, #tag2">
-
+			<input th:value="${tags}" type="text" list="tags" name="tagsname" multiple="multiple" placeholder="example : #tag1, #tag2">
 			<datalist id="tags">
 				<option th:each="tag : ${listOfTags}" th:text="${tag}">
 			</datalist>
 		</div>
 		<div class="radiobtn">
-			<input type="radio" id="save" name="postType" value="save" required="required">   <label for="save">save</label>
-		<input type="radio" id="publish" name="postType" value="publish"> <label for="publish">publish</label><br>
-		<button type="submit">submit</button>
+			<input type="radio" id="save" name="postType" value="save" required="required">   
+			<label for="save">save</label>
+			<input type="radio" id="publish" name="postType" value="publish"> 
+			<label for="publish">publish</label><br>
+			<button type="submit">submit</button>
 		</div>
 	</form>
 </body>
-
 </html>
