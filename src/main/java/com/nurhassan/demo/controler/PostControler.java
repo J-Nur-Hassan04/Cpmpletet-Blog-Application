@@ -89,7 +89,7 @@ public class PostControler {
 		return tag;
 	}
 
-	@RequestMapping(value = { "/posts/{id}/update" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/posts/{id}/update" }, method = RequestMethod.POST)
 	public ModelAndView getUpdatePostForm(Post post, @PathVariable("id") int id,
 			@RequestParam("previoustags") String tags) {
 		ModelAndView modelAndView = new ModelAndView();

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "Comments")
 public class Comment {
@@ -22,6 +24,7 @@ public class Comment {
 	private Date createdAt;
 	private Date updatedAt;
 
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Post posts;
 

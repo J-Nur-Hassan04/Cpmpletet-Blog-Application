@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "Tags")
 public class Tag {
@@ -22,6 +24,7 @@ public class Tag {
 	private Date updatedAt;
 	private String name;
 	
+	@JsonBackReference
 	@ManyToMany(mappedBy = "tags")
 	List<Post> post = new ArrayList<>();
 

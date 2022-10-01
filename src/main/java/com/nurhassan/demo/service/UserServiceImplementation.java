@@ -1,5 +1,7 @@
 package com.nurhassan.demo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,11 @@ public class UserServiceImplementation implements UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Override
+	public List<User> getAllUserData() {
+		
+		return userRepository.findAll();
+	}
 	@Override
 	public void saveUserDetails(User user) {
 		userRepository.save(user);
@@ -29,5 +36,6 @@ public class UserServiceImplementation implements UserService {
 		User user = userRepository.findById(id).orElse(null);
 		return user;
 	}
+
 
 }

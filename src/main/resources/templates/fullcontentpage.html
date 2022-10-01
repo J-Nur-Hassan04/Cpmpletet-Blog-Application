@@ -85,7 +85,7 @@ p {
 					<div
 						th:if="${(#request.userPrincipal.principal.id == post.getUser().getId()) or (#request.userPrincipal.principal.role ==  'ADMIN' )}">
 						<form action="#"
-							th:action="@{/posts/{id}/update(id=${post.getId()})}">
+							th:action="@{/posts/{id}/update(id=${post.getId()})}" method="post">
 							<input type="hidden" name="title" th:value="${post.getTitle()}">
 							<input type="hidden" name="content"
 								th:value="${post.getContent()}"> <input type="hidden"
@@ -150,7 +150,6 @@ p {
 				<input type="hidden" name="name" th:value = "${#request.userPrincipal.principal.name}"><br>
 				<input type="hidden" name="email" th:value = "${#request.userPrincipal.principal.email}"><br>
 			</div>
-			<input type="hidden" name="name"> 
 			<textarea name="comment" rows="15" cols="28" placeholder="write your comment here" required="required"></textarea>
 			<br>
 			<button type="submit">submit</button>

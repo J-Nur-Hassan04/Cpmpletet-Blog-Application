@@ -55,7 +55,7 @@ a {
 					</div>
 					<div>
 						<form action="#"
-							th:action="@{/posts/{id}/update(id=${post.getId()})}">
+							th:action="@{/posts/{id}/update(id=${post.getId()})}" method="post">
 							<input type="hidden" name="title" th:value="${post.getTitle()}">
 							<input type="hidden" name="content"
 								th:value="${post.getContent()}"> <input type="hidden"

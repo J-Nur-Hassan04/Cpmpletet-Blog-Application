@@ -40,7 +40,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 				.authorizeRequests()
-				.antMatchers("/", "/singup/**","/posts/**")
+				.antMatchers("/api/admin**").hasAuthority("ADMIN")
+				.antMatchers("/api").hasAnyAuthority("ADMIN","AUTHOR")
+				.antMatchers("/posts/{id}/update").hasAnyAuthority("AUTHOR","ADMIN")
+				.antMatchers("/", "/singup/**","/posts/**", "/api")
 				.permitAll()
 				.anyRequest()
 				.authenticated()

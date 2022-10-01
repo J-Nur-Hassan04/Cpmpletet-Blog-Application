@@ -18,6 +18,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "Posts")
 public class Post {
@@ -37,12 +41,15 @@ public class Post {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
+	@JsonManagedReference
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
 	private List<Tag> tags = new ArrayList<>();
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
 
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	User user;
 
@@ -148,6 +155,13 @@ public class Post {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return "Post [id=" + id + ", title=" + title + ", excerpt=" + excerpt + ", content=" + content + ", author="
+				+ author + ", publishedAt=" + publishedAt + ", isPublished=" + isPublished + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + "]";
 	}
 
 }
