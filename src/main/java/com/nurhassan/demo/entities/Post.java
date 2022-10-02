@@ -41,11 +41,9 @@ public class Post {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedAt;
 
-	@JsonManagedReference
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
 	private List<Tag> tags = new ArrayList<>();
 
-	@JsonManagedReference
 	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
 
@@ -53,6 +51,7 @@ public class Post {
 	@ManyToOne(fetch = FetchType.LAZY)
 	User user;
 
+	@JsonIgnore
 	public String getTagsInString() {
 		String tagStr = "";
 		for (Tag tag : tags) {
@@ -155,13 +154,6 @@ public class Post {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	@Override
-	public String toString() {
-		return "Post [id=" + id + ", title=" + title + ", excerpt=" + excerpt + ", content=" + content + ", author="
-				+ author + ", publishedAt=" + publishedAt + ", isPublished=" + isPublished + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + "]";
 	}
 
 }

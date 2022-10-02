@@ -272,12 +272,12 @@ public class HomeControler {
 	@RequestMapping(value = {"/singup/adduser"}, method = RequestMethod.POST)
 	public ModelAndView addUser(User user)
 	{	
-		User u = new User();
-		u.setName(user.getName());
-		u.setEmail(user.getEmail());
-		u.setPassword(user.getPassword());
-		u.setRole("AUTHOR");
-		userService.saveUserDetails(u);
+		User newUser = new User();
+		newUser.setName(user.getName());
+		newUser.setEmail(user.getEmail());
+		newUser.setPassword(user.getPassword());
+		newUser.setRole("AUTHOR");
+		userService.saveUserDetails(newUser);
 	
 		return new ModelAndView("redirect:/");
 	}

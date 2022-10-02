@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "UserData")
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_seq")
 	private int id;
@@ -25,7 +25,6 @@ public class User {
 	private String password;
 	private String role;
 
-	@JsonManagedReference
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Post> posts;
 
@@ -61,6 +60,14 @@ public class User {
 		this.password = password;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public List<Post> getPosts() {
 		return posts;
 	}
@@ -69,14 +76,4 @@ public class User {
 		this.posts = posts;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
-
-	
 }
