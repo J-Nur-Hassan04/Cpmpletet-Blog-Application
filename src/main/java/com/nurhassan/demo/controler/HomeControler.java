@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nurhassan.demo.entities.Post;
@@ -17,7 +16,6 @@ import com.nurhassan.demo.service.PostService;
 import com.nurhassan.demo.service.TagService;
 import com.nurhassan.demo.service.UserService;
 
-@RestController
 @Controller
 public class HomeControler {
 

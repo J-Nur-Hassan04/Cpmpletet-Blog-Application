@@ -51,12 +51,21 @@
 	<form action="#" th:action="@{/posts/{id}/update/storenewpost(id = ${post.getId()})}"
 		style="text-align: center;" autocomplete="off" method="post">
 		<h1>Update your blog post</h1>
-		<h4 th:inline="text">Author : [[${#request.userPrincipal.principal.name}]]</h4>
 		<div class="blogform">
 			<input th:value="${post.getTitle()}" type="text" name="title" placeholder="Enter Title" required="required"><br>
 			<textarea th:utext="${#strings.replace(post.getContent(),'<br>','&#10;')}" name="content" rows="15" cols="28" placeholder="Write blog here" required="required"></textarea>
 			<br> 
-			<input th:value="${#request.userPrincipal.principal.name}" type="hidden" name="author" placeholder="Auhor name" required="required"><br>
+			
+			
+			<div sec:authorize="hasAuthority('ADMIN')">
+				<input th:value="${post.getAuthor()}" type="text" name="author" placeholder="Auhor name" required="required"><br>
+			</div>
+			
+			<div sec:authorize="hasAuthority('AUTHOR')">
+				<h4 style="margin: 0;" th:inline="text">Author : [[${#request.userPrincipal.principal.name}]]</h4>
+				<input th:value="${#request.userPrincipal.principal.name}" type="hidden" name="author" placeholder="Auhor name" required="required"><br>
+			</div>
+			
 		</div>
 
 		<div class="tagsform">
