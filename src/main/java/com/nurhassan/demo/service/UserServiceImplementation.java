@@ -20,7 +20,7 @@ public class UserServiceImplementation implements UserService {
 		return userRepository.findAll();
 	}
 	@Override
-	public void saveUserDetails(User user) {
+	public void saveOrUpdateUserDetails(User user) {
 		userRepository.save(user);
 		
 	}
@@ -35,6 +35,11 @@ public class UserServiceImplementation implements UserService {
 	public User getUserById(int id) {
 		User user = userRepository.findById(id).orElse(null);
 		return user;
+	}
+	@Override
+	public void deleteUserBYId(int userId) {
+		userRepository.deleteById(userId);
+		
 	}
 
 

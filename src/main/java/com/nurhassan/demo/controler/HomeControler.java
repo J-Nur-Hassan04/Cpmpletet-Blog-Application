@@ -30,7 +30,7 @@ public class HomeControler {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value = { "/posts", "/" })
+	@RequestMapping(value = {"/","/posts"})
 	public ModelAndView getPages(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		int start = 0;
@@ -277,7 +277,7 @@ public class HomeControler {
 		newUser.setEmail(user.getEmail());
 		newUser.setPassword(user.getPassword());
 		newUser.setRole("AUTHOR");
-		userService.saveUserDetails(newUser);
+		userService.saveOrUpdateUserDetails(newUser);
 	
 		return new ModelAndView("redirect:/");
 	}
