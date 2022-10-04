@@ -1,0 +1,24 @@
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ heroku login
+ ›   Warning: heroku update available from 7.63.4 to 7.64.0.
+heroku: Press any key to open up the browser to login or q to exit: 
+Opening browser to https://cli-auth.heroku.com/auth/cli/browser/9a668449-51b2-414d-807b-9e4ac99190c5?requestor=SFMyNTY.g2gDbQAAAA0xODIuNzQuMzUuMTMwbgYAwDu_oYMBYgABUYA.X12fFnNOdV1LliI1AKVTij7HA5JW51c4JBOoRZPeFFA
+Logging in... done
+Logged in as sknurhassan04@gmail.com
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ git init
+Reinitialized existing Git repository in /home/nur/temp/sts/Blog-1/.git/
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ git add
+Nothing specified, nothing added.
+Maybe you wanted to say 'git add .'?
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ git add .
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ git commit -m "before deploy"
+On branch master
+Your branch is ahead of 'originlab/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ heroku create
+ ›   Warning: heroku update available from 7.63.4 to 7.64.0.
+Creating app... done, ⬢ evening-plateau-38987
+https://evening-plateau-38987.herokuapp.com/ | https://git.heroku.com/evening-plateau-38987.git
+nur@nur-Vostro-5625:~/temp/sts/Blog-1$ git push heroku master
+
