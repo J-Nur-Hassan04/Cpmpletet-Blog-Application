@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.nurhassan.demo.entities.Post;
@@ -66,10 +67,10 @@ public class PostServiceImplementation implements PostService {
 		Page<Post> posts = null;
 		if (basic.equals("ASC")) {
 			posts = postRepository
-					.findAll(PageRequest.of(start, limit, org.springframework.data.domain.Sort.by(column).ascending()));
+					.findAll(PageRequest.of(start, limit, Sort.by(column).ascending()));
 		} else if (basic.equals("DESC")) {
 			posts = postRepository.findAll(
-					PageRequest.of(start, limit, org.springframework.data.domain.Sort.by(column).descending()));
+					PageRequest.of(start, limit,Sort.by(column).descending()));
 		}
 		return posts;
 	}

@@ -12,7 +12,7 @@ import com.nurhassan.demo.entities.Post;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-	@Query("select post from Post post where is_published = true")
+	@Query("select distinct post from Post post where is_published = true")
 	Page<Post> findAll(Pageable pageable);
 
 	@Query(value = "select distinct author from posts", nativeQuery = true)
@@ -37,6 +37,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "or "
 			+ "upper (post.author) "
 			+ "like concat('%',(?1),'%') "
+			+ "and "
+			+ "is_published = true "
 			+ "group by post.id")
 	Page<Post> searchedPosts(String searchArg, Pageable pageable);
 	
@@ -55,7 +57,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "like concat('%',(:arg),'%') "
 			+ "or "
 			+ "upper (post.content) "
-			+ "like concat('%',(:arg),'%')")
+			+ "like concat('%',(:arg),'%') "
+			+ "and "
+			+ "is_published = true")
 	Page<Post> seacchedPostSearchArgAndTags(@Param("arg") String searchArgs ,@Param("tags") String[] tags,Pageable pageable);
 	
 	@Query("SELECT distinct post "
@@ -68,7 +72,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "and "
 			+ "(post.author) "
 			+ "in "
-			+ "(:authors)")
+			+ "(:authors) "
+			+ "and "
+			+ "is_published = true")
 	Page<Post> searchedPostsWithTagAuthors(String[] tags, String[] authors,Pageable pageable);
 	
 	
@@ -89,7 +95,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "and  "
 			+ "(tag.name) in (:tags) "
 			+ "and "
-			+ "(post.author) in (:authors)")
+			+ "(post.author) in (:authors) "
+			+ "and "
+			+ "is_published = true")
 	Page<Post> searchedPostsWithSearchArgTagAuthors(@Param("arg") String searchArgs ,
 			@Param("tags") String[] tags,@Param("authors") String[] authors,Pageable pageable);
 	
@@ -98,7 +106,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "from "
 			+ "Post post "
 			+ "where "
-			+ "post.author in (:authors)")
+			+ "post.author in (:authors) "
+			+ "and "
+			+ "is_published = true")
 	Page<Post> searchedPostsByAuthors(@Param("authors") String[] authors, Pageable pageable);
 	
 	@Query("select distinct post "
@@ -107,7 +117,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "join "
 			+ "post.tags tag "
 			+ "where "
-			+ "tag.name in (:tags)")
+			+ "tag.name in (:tags) "
+			+ "and "
+			+ "is_published = true")
 	Page<Post> searchedPostsByTags(@Param("tags") String[] tags, Pageable pageable);
 	
 	@Query("select distinct post "
@@ -117,7 +129,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "(post.author) in (:authors) and "
 			+ "upper (post.title) like concat('%',(:arg),'%') "
 			+ "or "
-			+ "upper (post.content) like concat('%',(:arg),'%')")
+			+ "upper (post.content) like concat('%',(:arg),'%') "
+			+ "and "
+			+ "is_published = true")
 	Page<Post> searchedPostsBySearchArgAndAuthors(@Param("arg")String searchArg,@Param("authors") String[] authors, Pageable pageable);
 	
 	@Query("SELECT post "
@@ -125,13 +139,17 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 			+ "Post post "
 			+ "join "
 			+ "post.tags tag "
-			+ "where (tag.name) = (:tags)")
+			+ "where (tag.name) = (:tags) "
+			+ "and "
+			+ "is_published = true")
 	List<Post> findAllByTagsArray(@Param("tags") String[] tags);
 
 	@Query("select post "
 			+ "from "
 			+ "Post post "
-			+ "where (post.author) in (:authors)")
+			+ "where (post.author) in (:authors) "
+			+ "and "
+			+ "is_published = true")
 	List<Post> findAllByAuthorArray(String[] authors);
 	
 	@Query("select post from Post post where user_id = :userId and is_published = false")
