@@ -4,6 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Blog Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap"
+	rel="stylesheet">
 </head>
 
 <body>
@@ -14,19 +19,18 @@
 				<div class="dropdown-content">
 					<a href="#" th:href="@{/posts/}">Home</a> <a
 						sec:authorize="isAuthenticated()" href="#"
-						th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See
-						drafts</a> <a th:href="@{/posts/olderposts}">see older posts</a> <a
+						th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See drafts</a> <a th:href="@{/posts/olderposts}">see older posts</a> <a
 						th:href="@{/posts/recentposts}">see most recent posts</a>
 				</div>
 			</div>
 		</div>
 		<div class="author-filter">
 			<div class="dropdown">
-				<button class="dropandwritebtn">search or filter</button>
+				<button class="dropandwritebtn">Filter</button>
 				<div class="dropdown-content">
 					<form action="/posts/searchedposts">
 						<input name="searchArg" type="text" placeholder="search here">
-						<button class="dropandwritebtn" type="submit">search</button>
+						<button class="dropandwritebtn" type="submit">Search</button>
 						<h4>Tags</h4>
 						<div th:each="tag : ${tagsList}">
 							<input th:value="${tag}" type="checkbox" name="tagName">
@@ -42,8 +46,8 @@
 			</div>
 		</div>
 
-		<div class="dropandwritebtn">
-			<a href="/newpost">Write post</a>
+		<div >
+			<button class="dropandwritebtn"><a href="/newpost">Write post</a></button>
 		</div>
 
 		<div style="display: flex;">
@@ -79,19 +83,25 @@
 		</table>
 
 		<div class="pagination">
-			<form th:if="${totalPages gt pageNumber + 1}" action="/posts/">
-				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
-				<input name="limit" type="hidden" th:value="${limit}">
-				<button type="submit">Next</button>
-			</form>
-			<form th:if="${pageNumber gt 1}" action="/posts/">
-				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
-				<input name="limit" type="hidden" th:value="${limit}">
-				<button type="submit">Previous</button>
-			</form>
-			<form th:if="${pageNumber eq 1}" action="/posts/">
-				<button type="submit">Previous</button>
-			</form>
+			<div th:if="${pageNumber gt 1}">
+				<form action="/posts/">
+					<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
+					<input name="limit" type="hidden" th:value="${limit}">
+					<button class="next-prev-btn" type="submit">Previous</button>
+				</form>
+			</div>
+			<div th:if="${pageNumber eq 1}">
+				<form action="/posts/">
+					<button class="next-prev-btn" type="submit">Previous</button>
+				</form>
+			</div>
+			<div th:if="${totalPages gt pageNumber + 1}">
+				<form action="/posts/">
+					<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
+					<input name="limit" type="hidden" th:value="${limit}">
+					<button type="submit" class="next-prev-btn">Next</button>
+				</form>
+			</div>
 		</div>
 	</div>
 </body>
@@ -99,10 +109,45 @@
 <style>
 html, body {
 	background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
+	font-family: 'Poppins', sans-serif;
+	font-size: 20px
 }
 
 h4 {
 	margin-left: 10px;
+}
+
+.pagination {
+	display: flex;
+	justify-content: space-around;
+}
+
+button {
+	font-family: 'Poppins', sans-serif;
+	font-size: 27px;
+	font-weight: bold;
+	width: 150px;
+	height: 40px;
+}
+
+.next-prev-btn {
+	position: relative;
+	top: 5rem;
+	margin:0;
+	padding:0;
+	width: 100px;
+	height: 50px;
+	border: none;
+	font-family: 'Poppins', sans-serif;
+	font-size: 20px;
+	border-radius: 8px;
+	cursor:pointer;
+	
+}
+
+.next-prev-btn:hover {
+	background-color: green;
+	color: white;
 }
 
 .header {
@@ -124,7 +169,7 @@ table {
 
 td {
 	background: #e9e9ed;
-	border-radius: 30px;
+	border-radius: 12px;
 	padding: 10px;
 	border: 2px solid black;
 	margin: 5px;
@@ -145,17 +190,25 @@ table td a {
 
 .dropandwritebtn {
 	background-color: #04AA6D;
-	border-radius: 20px;
+	border-radius: 12px;
 	color: white;
 	padding: 13px;
 	font-size: 13px;
 	border: none;
 	margin-bottom: 10px;
 	color: white;
+	justify-content: space-around;
+	width: 140px;
+	height: 50px;
+	color:white;
+	font-size:15px;
+	font-family: 'Poppins', sans-serif;
+	cursor:pointer;
 }
 
 .dropandwritebtn a {
 	margin: 0;
+	
 }
 
 .dropdown {

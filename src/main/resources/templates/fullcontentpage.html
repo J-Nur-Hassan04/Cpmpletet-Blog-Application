@@ -10,14 +10,14 @@
 	<table style="max-width: 68em; margin: auto;">
 		<tr>
 			<td>
-				<h1 th:text="${post.getTitle()}">How distributed systems helped make the pandemic bearable</h1>
-				<p th:utext="${#strings.replace(post.getContent(),'&#10;','<br>')}"></p>
+				<h1 th:text="${post.getTitle()}"></h1>
+				<p th:utext="${#strings.replace(post.getContent(),'&#10;','<br>')}"></p><br>
 				<!-- <p th:text="${post.getAuthor()}"></p> -->
-				<p>Author : [[${post.getAuthor()}]]</p>
+				<p>Author : [[${post.getAuthor()}]]</p><br>
 				<p>Published at : [[${post.getPublishedAt()}]]</p>
-				<p>Updated at : [[${post.getUpdatedAt()}]]</p> <label for="tags">Tags
-					: </label>
+				<p>Updated at : [[${post.getUpdatedAt()}]]</p><br> 
 				<div class="tags">
+				<p>Tags : </p>
 					<p id="tags" th:each="tag :${post.getTags()}"
 						th:text="${tag.getName()}"></p>
 					<br>

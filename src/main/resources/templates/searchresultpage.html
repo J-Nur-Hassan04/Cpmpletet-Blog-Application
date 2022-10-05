@@ -22,7 +22,7 @@
 
 		<div class="author-filter">
 			<div class="dropdown">
-				<button class="dropandwritebtn">Filter by Author</button>
+				<button class="dropandwritebtn">Filter</button>
 				<div class="dropdown-content">
 					<form action="/posts/searchedposts">
 						<input name="searchArg" type="text" th:value="${searchArg}">
@@ -67,37 +67,81 @@
 		</table>
 
 		<div class="pagination">
-			<form th:if="${totalPages gt pageNumber + 1}"
-				action="/posts/searchedposts/">
-				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
-				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> <input
-					name="authorName" type="hidden" th:value="${authorName}"> <input
-					name="limit" type="hidden" th:value="${limit}">
-				<button type="submit">Next</button>
-			</form>
-			<form th:if="${pageNumber gt 1}" action="/posts/searchedposts/">
-				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
-				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> <input
-					name="authorName" type="hidden" th:value="${authorName}"> <input
-					name="limit" type="hidden" th:value="${limit}">
-				<button type="submit">Previous</button>
-			</form>
-			<form th:if="${pageNumber eq 1}" action="/posts/searchedposts">
-				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> <input
-					name="authorName" type="hidden" th:value="${authorName}">
-				<button type="submit">Previous</button>
-			</form>
+			<div th:if="${totalPages gt pageNumber + 1}">
+				<form action="/posts/searchedposts/">
+					<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
+					<input name="searchArg" type="hidden" th:value="${searchArg}">
+					<input name="tagName" type="hidden" th:value="${tagName}">
+					<input name="authorName" type="hidden" th:value="${authorName}">
+					<input name="limit" type="hidden" th:value="${limit}">
+					<button type="submit" class="next-prev-btn">Next</button>
+				</form>
+			</div>
+			<div th:if="${pageNumber gt 1}">
+				<form action="/posts/searchedposts/">
+					<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
+					<input name="searchArg" type="hidden" th:value="${searchArg}">
+					<input name="tagName" type="hidden" th:value="${tagName}">
+					<input name="authorName" type="hidden" th:value="${authorName}">
+					<input name="limit" type="hidden" th:value="${limit}">
+					<button type="submit" class="next-prev-btn">Previous</button>
+				</form>
+			</div>
+			<div th:if="${pageNumber eq 1}">
+				<form action="/posts/searchedposts">
+					<input name="searchArg" type="hidden" th:value="${searchArg}">
+					<input name="tagName" type="hidden" th:value="${tagName}">
+					<input name="authorName" type="hidden" th:value="${authorName}">
+					<button type="submit" class="next-prev-btn">Previous</button>
+				</form>
+			</div>
 		</div>
 
 	</div>
 </body>
 </html>
+
 <style>
 html, body {
 	background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
+	font-family: 'Poppins', sans-serif;
+	font-size: 20px
+}
+
+h4 {
+	margin-left: 10px;
+}
+
+.pagination {
+	display: flex;
+	justify-content: space-around;
+}
+
+button {
+	font-family: 'Poppins', sans-serif;
+	font-size: 27px;
+	font-weight: bold;
+	width: 150px;
+	height: 40px;
+}
+
+.next-prev-btn {
+	position: relative;
+	top: 5rem;
+	margin: 0;
+	padding: 0;
+	width: 100px;
+	height: 50px;
+	border: none;
+	font-family: 'Poppins', sans-serif;
+	font-size: 20px;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.next-prev-btn:hover {
+	background-color: green;
+	color: white;
 }
 
 .header {
@@ -119,7 +163,7 @@ table {
 
 td {
 	background: #e9e9ed;
-	border-radius: 30px;
+	border-radius: 12px;
 	padding: 10px;
 	border: 2px solid black;
 	margin: 5px;
@@ -140,11 +184,20 @@ table td a {
 
 .dropandwritebtn {
 	background-color: #04AA6D;
+	border-radius: 12px;
 	color: white;
 	padding: 13px;
 	font-size: 13px;
 	border: none;
 	margin-bottom: 10px;
+	color: white;
+	justify-content: space-around;
+	width: 140px;
+	height: 50px;
+	color: white;
+	font-size: 15px;
+	font-family: 'Poppins', sans-serif;
+	cursor: pointer;
 }
 
 .dropandwritebtn a {
@@ -198,16 +251,12 @@ table td a {
 	background-color: #3e8e41;
 }
 
-h4 {
-	margin-left: 10px;
-}
-
 label {
 	margin: 5px;
 }
 
 input[type='checkbox'] {
-	margin-left: 10px;
 	transform: scale(1.5);
+	margin-left: 10px;
 }
 </style>

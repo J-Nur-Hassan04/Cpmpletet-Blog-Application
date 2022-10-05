@@ -4,6 +4,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Insert title here</title>
+	
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet"> 
 </head>
 
 <body>
@@ -44,15 +48,16 @@
 </body>
 </html>
 <style>
-
 	html,
 	body {
 		background: -webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6);
+		font-family: 'Poppins', sans-serif;
 	}
 
 	h1 {
 		color: white;
 		margin-top: 4%;
+	text-align: center;
 	}
 
 	.blogform input {
@@ -61,12 +66,18 @@
 		height: 3em;
 		margin: 2px;
 		font-size: 15px;
+		border: none;
+		border-radius: 6px;
+		font-family: 'Poppins', sans-serif;
 	}
 
 	.blogform textarea {
 		border-radius: 15px;
 		width: 60%;
 		height: 18vw;
+		font-family: 'Poppins', sans-serif;
+		border: none;
+		border-radius: 6px;
 	}
 
 	.tagsform input {
@@ -74,11 +85,15 @@
 		width: 60%;
 		margin-bottom: 10px;
 		height: 3em;
+		font-family: 'Poppins', sans-serif;
+		border: none;
+		border-radius: 6px;
 	}
 
 	.radiobtn input {
 		width: 20px;
 		margin: 0;
+		cursor: pointer;
 	}
 
 	.radiobtn label {
@@ -93,8 +108,17 @@
 		background-color: #04aa6d;
 		padding: 0.5em;
 		margin: 10px;
+		border: none;
+		border-radius: 6px;
+		font-family: 'Poppins', sans-serif;
+		cursor: pointer;
 	}
-	h4
+	.radiobtn button:hover{
+
+		background-color: orange;
+		transition: 1s;
+	}
+	span
 	{
 		color: white;
 	}
