@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import com.nurhassan.demo.entities.Post;
 
 public interface PostService {
-	public void savePost(Post post);
+	public Post savePost(Post post);
 
 	public Post getPostById(int id);
 
