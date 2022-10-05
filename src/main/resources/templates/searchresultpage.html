@@ -1,11 +1,105 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-	<style>
+	<div class="header">
+		<div class="options">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Dropdown</button>
+				<div class="dropdown-content">
+					<a href="#" th:href="@{/posts/}">Home</a> <a
+						sec:authorize="isAuthenticated()" href="#"
+						th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See
+						drafts</a> <a th:href="@{/posts/olderposts}">see older posts</a> <a
+						th:href="@{/posts/recentposts}">see most recent posts</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="author-filter">
+			<div class="dropdown">
+				<button class="dropandwritebtn">Filter by Author</button>
+				<div class="dropdown-content">
+					<form action="/posts/searchedposts">
+						<input name="searchArg" type="text" th:value="${searchArg}">
+						<button class="dropandwritebtn" type="submit">search</button>
+						<h4>Tags</h4>
+						<div th:each="tag : ${tagsList}">
+							<input th:value="${tag}" type="checkbox" name="tagName">
+							<label th:text="${tag}"></label>
+						</div>
+						<h4>Authors</h4>
+						<div th:each="author : ${authorList}">
+							<input th:value="${author}" type="checkbox" name="authorName">
+							<label th:text="${author}"></label>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="dropandwritebtn">
+			<a href="/newpost">Write post</a>
+		</div>
+
+	</div>
+	<h4 th:text="${args}"></h4>
+	<div class="content">
+		<table>
+			<tr th:each="post : ${postList}">
+				<td th:if="${post.isPublished()}">
+					<h1 th:text="${post.getTitle()}"></h1>
+					<p th:text="${post.getExcerpt()}"></p>
+					<p th:text=" 'Author : ' + ${post.getAuthor()}"></p>
+					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
+					<div class="tags">
+						<p>Tags :</p>
+						<p id="tags" th:each="tag :${post.getTags()}"
+							th:text="${tag.getName()}"></p>
+						<br>
+					</div> <a th:href="@{/posts/{id}(id=${post.getId()})}">read more</a>
+				</td>
+			</tr>
+		</table>
+
+		<div class="pagination">
+			<form th:if="${totalPages gt pageNumber + 1}"
+				action="/posts/searchedposts/">
+				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
+				<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> <input
+					name="authorName" type="hidden" th:value="${authorName}"> <input
+					name="limit" type="hidden" th:value="${limit}">
+				<button type="submit">Next</button>
+			</form>
+			<form th:if="${pageNumber gt 1}" action="/posts/searchedposts/">
+				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
+				<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> <input
+					name="authorName" type="hidden" th:value="${authorName}"> <input
+					name="limit" type="hidden" th:value="${limit}">
+				<button type="submit">Previous</button>
+			</form>
+			<form th:if="${pageNumber eq 1}" action="/posts/searchedposts">
+				<input name="searchArg" type="hidden" th:value="${searchArg}">
+				<input name="tagName" type="hidden" th:value="${tagName}"> <input
+					name="authorName" type="hidden" th:value="${authorName}">
+				<button type="submit">Previous</button>
+			</form>
+		</div>
+
+	</div>
+</body>
+</html>
+<style>
+html, body {
+	background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
+}
+
 .header {
 	display: flex;
 	justify-content: space-between;
@@ -24,12 +118,15 @@ table {
 }
 
 td {
+	background: #e9e9ed;
+	border-radius: 30px;
 	padding: 10px;
 	border: 2px solid black;
 	margin: 5px;
 }
 
 table td a {
+	text-decoration: none;
 	float: right;
 }
 
@@ -101,101 +198,16 @@ table td a {
 	background-color: #3e8e41;
 }
 
+h4 {
+	margin-left: 10px;
+}
+
 label {
 	margin: 5px;
 }
 
 input[type='checkbox'] {
+	margin-left: 10px;
 	transform: scale(1.5);
 }
 </style>
-
-
-	<div class="header">
-		<div class="options">
-			<div class="dropdown">
-				<button class="dropandwritebtn">Dropdown</button>
-				<div class="dropdown-content">
-					<a href="#" th:href="@{/posts/}">Home</a> 
-					<a sec:authorize="isAuthenticated()" href="#" th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See drafts</a> 
-					<a th:href="@{/posts/olderposts}">see older posts</a> 
-					<a th:href="@{/posts/recentposts}">see most recent posts</a>
-				</div>
-			</div>
-		</div>
-
-		<div class="author-filter">
-			<div class="dropdown">
-				<button class="dropandwritebtn">Filter by Author</button>
-				<div class="dropdown-content">
-					<form action="/posts/searchedposts">
-						<input name="searchArg" type="text" th:value="${searchArg}">
-						<button class="dropandwritebtn" type="submit">search</button>
-						<h4>Tags</h4>
-						<div th:each="tag : ${tagsList}">
-							<input th:value="${tag}" type="checkbox" name="tagName">
-							<label th:text="${tag}"></label>
-						</div>
-						<h4>Authors</h4>
-						<div th:each="author : ${authorList}">
-							<input th:value="${author}" type="checkbox" name="authorName">
-							<label th:text="${author}"></label>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-
-		<div class="dropandwritebtn">
-			<a href="/newpost">Write post</a>
-		</div>
-
-	</div>
-	<h4 th:text="${args}"></h4>
-	<div class="content">
-		<table>
-			<tr th:each="post : ${postList}">
-				<td th:if="${post.isPublished()}">
-					<h1 th:text="${post.getTitle()}"></h1>
-					<p th:text="${post.getExcerpt()}"></p>
-					<p th:text=" 'Author : ' + ${post.getAuthor()}"></p>
-					<p th:text="'Published At : ' + ${post.getPublishedAt()}"></p>
-					<div class="tags">
-						<p>Tags :</p>
-						<p id="tags" th:each="tag :${post.getTags()}"
-							th:text="${tag.getName()}"></p>
-						<br>
-					</div> <a th:href="@{/posts/{id}(id=${post.getId()})}">read more</a>
-				</td>
-			</tr>
-		</table>
-
-		<div class="pagination">
-			<form th:if="${totalPages gt pageNumber + 1}"
-				action="/posts/searchedposts/">
-				<input name="pageNumber" type="hidden" th:value="${pageNumber + 1}">
-				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> 
-				<input name="authorName" type="hidden" th:value="${authorName}"> 
-				<input name="limit" type="hidden" th:value="${limit}">
-				<button type="submit">Next</button>
-			</form>
-			<form th:if="${pageNumber gt 1}" action="/posts/searchedposts/">
-				<input name="pageNumber" type="hidden" th:value="${pageNumber - 1}">
-				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> 
-				<input name="authorName" type="hidden" th:value="${authorName}"> 
-				<input name="limit" type="hidden" th:value="${limit}">
-				<button type="submit">Previous</button>
-			</form>
-			<form th:if="${pageNumber eq 1}" action="/posts/searchedposts">
-				<input name="searchArg" type="hidden" th:value="${searchArg}">
-				<input name="tagName" type="hidden" th:value="${tagName}"> 
-				<input name="authorName" type="hidden" th:value="${authorName}">
-				<button type="submit">Previous</button>
-			</form>
-		</div>
-
-	</div>
-</body>
-</html>

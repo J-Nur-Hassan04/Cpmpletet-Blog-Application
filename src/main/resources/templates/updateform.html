@@ -7,47 +7,6 @@
 </head>
 
 <body>
-	<style>
-		h1 {
-			margin-top: 4%;
-		}
-
-		.blogform input {
-			width: 60%;
-			height: 3em;
-			margin: 2px;
-			font-size: 15px;
-		}
-
-		.blogform textarea {
-			width: 60%;
-			height: 18vw;
-		}
-
-		.tagsform input {
-			width: 60%;
-			margin-bottom: 10px;
-			height: 3em;
-		}
-
-		.radiobtn input {
-			width: 20px;
-			margin: 0;
-		}
-
-		.radiobtn label {
-			font-size: 30px;
-			margin-right: 10px;
-		}
-
-		.radiobtn button {
-			font-size: 20px;
-			width: 60%;
-			background-color: #04aa6d;
-			padding: 0.5em;
-			margin: 10px;
-		}
-	</style>
 	<form action="#" th:action="@{/posts/{id}/update/storenewpost(id = ${post.getId()})}"
 		style="text-align: center;" autocomplete="off" method="post">
 		<h1>Update your blog post</h1>
@@ -84,3 +43,59 @@
 	</form>
 </body>
 </html>
+<style>
+
+	html,
+	body {
+		background: -webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6);
+	}
+
+	h1 {
+		color: white;
+		margin-top: 4%;
+	}
+
+	.blogform input {
+		border-radius: 15px;
+		width: 60%;
+		height: 3em;
+		margin: 2px;
+		font-size: 15px;
+	}
+
+	.blogform textarea {
+		border-radius: 15px;
+		width: 60%;
+		height: 18vw;
+	}
+
+	.tagsform input {
+		border-radius: 15px;
+		width: 60%;
+		margin-bottom: 10px;
+		height: 3em;
+	}
+
+	.radiobtn input {
+		width: 20px;
+		margin: 0;
+	}
+
+	.radiobtn label {
+		font-size: 30px;
+		margin-right: 10px;
+	}
+
+	.radiobtn button {
+		border-radius: 15px;
+		font-size: 20px;
+		width: 60%;
+		background-color: #04aa6d;
+		padding: 0.5em;
+		margin: 10px;
+	}
+	h4
+	{
+		color: white;
+	}
+</style>

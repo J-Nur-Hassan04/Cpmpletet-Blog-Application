@@ -1,43 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
 </head>
+
 <body>
-	<style>
-table {
-	max-width: 68em;
-	margin: auto;
-}
-
-button {
-	font-size: 20px;
-	width: 20%;
-	background-color:#04aa6d;
-	width:100px;
-	padding: 0.2em;
-}
-
-td {
-	padding: 10px;
-	border: 2px solid black;
-	margin: 5px;
-	border: 2px solid black;
-}
-
-.tags {
-	display: flex;
-}
-
-.tags p {
-	margin: 3px;
-}
-
-a {
-	margin-left: 60em;
-}
-</style>
 	<div>
 		<table>
 			<tr th:each="post : ${postList}">
@@ -56,8 +25,8 @@ a {
 						<form action="#" th:action="@{/posts/{id}/update(id=${post.getId()})}" method="post">
 							<input type="hidden" name="title" th:value="${post.getTitle()}">
 							<input type="hidden" name="content" th:value="${post.getContent()}">
-							 <input type="hidden" name="author" th:value="${post.getAuthor()}"> 
-							 <input type="hidden" name="previoustags" th:value="${post.getTagsInString()}">
+							<input type="hidden" name="author" th:value="${post.getAuthor()}">
+							<input type="hidden" name="previoustags" th:value="${post.getTagsInString()}">
 							<button type="submit">update</button>
 						</form>
 					</div>
@@ -66,4 +35,45 @@ a {
 		</table>
 	</div>
 </body>
+
 </html>
+<style>
+	html,
+	body {
+		background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
+	}
+
+	table {
+		max-width: 68em;
+		margin: auto;
+	}
+
+	button {
+		font-size: 15px;
+		background-color: #04aa6d;
+		width: 100px;
+		padding: 0.2em;
+		border-radius: 10px;
+	}
+
+	td {
+		background: #e9e9ed;
+		border-radius: 30px;
+		padding: 10px;
+		border: 2px solid black;
+		margin: 5px;
+		border: 2px solid black;
+	}
+
+	.tags {
+		display: flex;
+	}
+
+	.tags p {
+		margin: 3px;
+	}
+
+	a {
+		margin-left: 60em;
+	}
+</style>

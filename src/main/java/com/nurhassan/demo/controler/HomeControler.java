@@ -254,16 +254,8 @@ public class HomeControler {
 	public ModelAndView getLoginForm() {
 		ModelAndView modelAndView = new ModelAndView();
 
-		modelAndView.setViewName("login");
+		modelAndView.setViewName("loginsinguppage");
 
-		return modelAndView;
-	}
-	
-	@RequestMapping("/singup")
-	public ModelAndView getSingUpForm()
-	{
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("singup");
 		return modelAndView;
 	}
 	
