@@ -66,12 +66,20 @@ public class MainControler {
 
 	@GetMapping("/admin/users-data")
 	public ResponseEntity<List<User>> getAllUser() {
-		return new ResponseEntity<List<User>>(userService.getAllUserData(), HttpStatus.FOUND);
+		List<User> users = userService.getAllUserData();
+		if (users == null) {
+			return new ResponseEntity<List<User>>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<User>>(users, HttpStatus.FOUND);
 	}
 
 	@GetMapping("/admin/user-data/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable("id") int userId) {
-		return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.FOUND);
+		User user = userService.getUserById(userId);
+		if (user == null) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<User>(user, HttpStatus.FOUND);
 	}
 
 	@PutMapping("/admin/user-data/{id}")
@@ -94,28 +102,26 @@ public class MainControler {
 		return new ResponseEntity<User>(HttpStatus.ACCEPTED);
 	}
 
-	@GetMapping("/allposts")
+	@GetMapping("/allposts/")
 	public ResponseEntity<Page<Post>> getPostsPagination(@RequestParam("pagenumber") int pageNumber,
 			@RequestParam("limit") int limit) {
 		return new ResponseEntity<Page<Post>>(postService.getAllPostsOfPage(pageNumber, limit), HttpStatus.FOUND);
 	}
-
-	@GetMapping("/add-post")
-	public String getNewPostTemplate()
-	{
-		return "{\n"
-				+ "    \"title\": \"\",\n"
-				+ "    \"content\": \"\",\n"
-				+ "    \"author\": \"\",\n"
-				+ "    \"tags\": [\n"
-				+ "        {\n"
-				+ "            \"name\": \"\"\n"
-				+ "        }\n"
-				+ "    ],\n"
-				+ "    \"published\": \n"
-				+ "}";
+	
+	@GetMapping("/allposts/sorted")
+	public ResponseEntity<Page<Post>> getSortedPostsPagination(@RequestParam("pagenumber") int pageNumber,
+			@RequestParam("limit") int limit, @RequestParam("on")String column, @RequestParam("by")String sortBy) {
+		return new ResponseEntity<Page<Post>>(postService.getSortedPosts(pageNumber,limit,column,sortBy), HttpStatus.FOUND);
 	}
 	
+
+	@GetMapping("/add-post")
+	public String getNewPostTemplate() {
+		return "{\n" + "    \"title\": \"\",\n" + "    \"content\": \"\",\n" + "    \"author\": \"\",\n"
+				+ "    \"tags\": [\n" + "        {\n" + "            \"name\": \"\"\n" + "        }\n" + "    ],\n"
+				+ "    \"published\": \n" + "}";
+	}
+
 	@PostMapping("/add-post")
 	public ResponseEntity<Post> addNewPost(@RequestBody Post post) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -160,7 +166,7 @@ public class MainControler {
 
 	@GetMapping("/post/{id}")
 	public ResponseEntity<Post> getPostById(@PathVariable("id") int postId) {
-		return new ResponseEntity<Post>(postService.getPostById(postId),HttpStatus.FOUND);
+		return new ResponseEntity<Post>(postService.getPostById(postId), HttpStatus.FOUND);
 	}
 
 	@PutMapping("/post/{id}")
@@ -229,17 +235,131 @@ public class MainControler {
 	}
 
 	@DeleteMapping("/post/{id}")
-	public ResponseEntity<Post> deletePostById(@PathVariable("id")int postId)
-	{
+	public ResponseEntity<Post> deletePostById(@PathVariable("id") int postId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		Post post = postService.getPostById(postId);
-		if(post != null && (userPrincipal.getRole().equals("ADMIN") || userPrincipal.getId() == post.getUser().getId()))
-		{
+		if (post != null
+				&& (userPrincipal.getRole().equals("ADMIN") || userPrincipal.getId() == post.getUser().getId())) {
 			postService.deletePost(post);
 			return new ResponseEntity<Post>(HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<Post>(HttpStatus.UNAUTHORIZED);
 	}
+
+	@GetMapping("/post/{id}/tags")
+	public ResponseEntity<List<Tag>> getTagsByPostId(@PathVariable("id")int postId)
+	{
+		Post post = postService.getPostById(postId);
+		
+		if(post != null)
+		{
+			return new ResponseEntity<List<Tag>>(post.getTags(), HttpStatus.FOUND);
+		}
+		
+		return new ResponseEntity<List<Tag>>(HttpStatus.NOT_FOUND);
+	}
+	
+	@GetMapping("/post/{id}/comments")
+	public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable("id") int postId) {
+		List<Comment> comments = postService.getPostById(postId).getComments();
+		if (comments == null) {
+			return new ResponseEntity<List<Comment>>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<List<Comment>>(comments, HttpStatus.FOUND);
+	}
+
+	@GetMapping("/post/{id}/comment/{commentId}")
+	public ResponseEntity<Comment> getCommentOfPostById(@PathVariable("id")int postId, @PathVariable("commentId")int commentId)
+	{		
+		Post post = postService.getPostById(postId);
+		Comment comment = commentService.getCommentById(commentId);
+		if(comment == null)
+		{
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
+		}
+		else if(post.getId() == comment.getPosts().getId())
+		{
+			return new ResponseEntity<Comment>(comment,HttpStatus.FOUND);
+		}
+		return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
+	}
+	@DeleteMapping("/post/{id}/comment/{commentId}")
+	public ResponseEntity<Comment> deleteCommentOfPostById(@PathVariable("id")int postId, @PathVariable("commentId")int commentId)
+	{
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		
+		Post post = postService.getPostById(postId);
+		Comment commentToDelete = commentService.getCommentById(commentId);
+		if(commentToDelete == null)
+		{
+			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
+		}
+		else if((post.getUser().getId() == userPrincipal.getId() || userPrincipal.getRole().equals("ADMIN")) && post.getId() == commentToDelete.getPosts().getId())
+		{
+			commentService.deleteCommentById(commentId);
+			return new ResponseEntity<Comment>(HttpStatus.ACCEPTED);
+		}
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
+	}
+	@PutMapping("/post/{id}/comment/{commentId}")
+	public ResponseEntity<Comment> updateCommentById(@RequestBody Comment comment, @PathVariable("id")int postId, @PathVariable("commentId")int commentId)
+	{
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		
+		Post post =  postService.getPostById(postId);
+		
+		if(post.getUser().getId() == userPrincipal.getId() || userPrincipal.getRole().equals("ADMIN"))
+		{
+			Comment commentToUpadate = commentService.getCommentById(commentId);
+			commentToUpadate.setComment(comment.getComment());
+			commentToUpadate.setUpdatedAt(new Date());
+			
+			commentService.saveComment(commentToUpadate);
+			
+			return new ResponseEntity<Comment>(commentToUpadate, HttpStatus.ACCEPTED);
+		}
+		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	@PostMapping("/post/{id}/add-comment")
+	public ResponseEntity<Post> addNewCommnet(@RequestBody Comment newComment ,@PathVariable("id")int postId)
+	{
+		
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		
+		Post post = postService.getPostById(postId);
+		List<Comment> postComments = post.getComments();
+		
+		if(authentication.getName().equals("anonymousUser"))
+		{
+			Comment comment = new Comment();
+			comment.setName(newComment.getName());
+			comment.setEmail(newComment.getEmail());
+			comment.setComment(newComment.getComment());
+			comment.setCreatedAt(new Date());
+			comment.setUpdatedAt(new Date());
+			comment.setPosts(post);
+			postComments.add(comment);
+		}else
+		{
+			UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+			Comment comment = new Comment();
+			comment.setName(userPrincipal.getName());
+			comment.setEmail(userPrincipal.getEmail());
+			comment.setComment(newComment.getComment());
+			comment.setCreatedAt(new Date());
+			comment.setUpdatedAt(new Date());
+			comment.setPosts(post);
+			postComments.add(comment);
+		}
+		
+		return new ResponseEntity<Post>(postService.savePost(post), HttpStatus.CREATED);
+	}
+	
 
 }
