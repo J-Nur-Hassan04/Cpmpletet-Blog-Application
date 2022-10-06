@@ -144,16 +144,16 @@ public class MainControler {
 
 		List<Tag> tags = new ArrayList<>();
 		for (Tag tag : post.getTags()) {
-			Tag t = tagService.getTagByName(tag.getName());
-			if (t == null) {
-				Tag t1 = new Tag();
-				t1.setName(tag.getName());
-				t1.setCreatedAt(new Date());
-				t1.setUpdatedAt(new Date());
-				t1.getPost().add(newPost);
-				tags.add(t1);
+			Tag prestTag = tagService.getTagByName(tag.getName());
+			if (prestTag == null) {
+				Tag newTag = new Tag();
+				newTag.setName(tag.getName());
+				newTag.setCreatedAt(new Date());
+				newTag.setUpdatedAt(new Date());
+				newTag.getPost().add(newPost);
+				tags.add(newTag);
 			} else {
-				tags.add(t);
+				tags.add(prestTag);
 			}
 
 		}
@@ -187,16 +187,16 @@ public class MainControler {
 
 			List<Tag> tags = new ArrayList<>();
 			for (Tag tag : updatedPost.getTags()) {
-				Tag t = tagService.getTagByName(tag.getName());
-				if (t == null) {
-					Tag t1 = new Tag();
-					t1.setName(tag.getName());
-					t1.setCreatedAt(new Date());
-					t1.setUpdatedAt(new Date());
-					t1.getPost().add(post);
-					tags.add(t1);
+				Tag presentTag = tagService.getTagByName(tag.getName());
+				if (presentTag == null) {
+					Tag newTag = new Tag();
+					newTag.setName(tag.getName());
+					newTag.setCreatedAt(new Date());
+					newTag.setUpdatedAt(new Date());
+					newTag.getPost().add(post);
+					tags.add(newTag);
 				} else {
-					tags.add(t);
+					tags.add(presentTag);
 				}
 
 			}
