@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<table border="2">
+		<tr>
+			<th>
+				<div class="url">URL</div>
+				<div class="header-form">
+					<form action="getApiData"><input type="text" name="requestedUrl"
+							placeholder="Type url to get api data"><button type="submit">Get Result</button></form>
+				</div>
+			</th>
+			<th>Method</th>
+			<th>Params</th>
+			<th>Permission</th>
+			<th>details</th>
+		</tr>
+		<tr>
+			<td>/api</td>
+			<td>Get</td>
+			<td>NA</td>
+			<td>All</td>
+			<td>For getting all posts</td>
+		</tr>
+		<tr>
+			<td>/api/admin/add-user</td>
+			<td>Post</td>
+			<td>Na</td>
+			<td>Admin</td>
+			<td>Add new user</td>
+		</tr>
+		<tr>
+			<td>/api/admin/users-data</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>Admin</td>
+			<td>Get all user-data</td>
+		</tr>
+		<tr>
+			<td>/api/admin/user-data/{id}</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>Admin</td>
+			<td>Get one user Details</td>
+
+		</tr>
+		<tr>
+			<td>/api/admin/user-data/{id}</td>
+			<td>Put</td>
+			<td>Na</td>
+			<td>Admin</td>
+			<td>Update user-data</td>
+		</tr>
+		<tr>
+			<td>/api/admin/user-data/{id}</td>
+			<td>Delete</td>
+			<td>Na</td>
+			<td>Admin</td>
+			<td>Delete a user data</td>
+		</tr>
+		<tr>
+			<td>/api/allposts/</td>
+			<td>Get</td>
+			<td>pagenumber<br>limit</td>
+			<td>All</td>
+			<td>Get pagination data</td>
+		</tr>
+		<tr>
+			<td>/api/allposts/sorted?pagenumber={*}&limit={*}&on=publishedAt&by={*}
+			</td>
+			<td>Get</td>
+			<td>pagenumber<br>limit->limit per page<br>on -> publishedAt<br>by -> "ASC"/"DESC"</td>
+			<td>All</td>
+			<td>Sort by ascending or descending</td>
+
+		</tr>
+		<tr>
+			<td>/api?searchArg={*}&tagName={*}&authorName={*}&pageNumber={*}&limit={*}</td>
+			<td>Get</td>
+			<td>searchArg -> search argument <br>tagName ->exact name of tags <br>authorName -> exact author name <br>pageNumber -> pagenumber<br>limit -> limit per page<br></td>
+			<td>All</td>
+			<td>search</td>
+		</tr>
+		<tr>
+			<td>/api/add-post</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>All</td>
+			<td>Get new post template</td>
+		</tr>
+		<tr>
+			<td>/api/add-post</td>
+			<td>Post</td>
+			<td>Na</td>
+			<td>ADMIN <br> AUTHOR</td>
+			<td>Create A New Post</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>All</td>
+			<td>Get Post By Id</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}</td>
+			<td>Put</td>
+			<td>Na</td>
+			<td>ADMIN<br>AUTHOR</td>
+			<td>Admin can Update any post Author can update his own post</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}</td>
+			<td>Delete</td>
+			<td>Na</td>
+			<td>ADMIN<br>AUTHOR</td>
+			<td>Admin can Delete any post Author can delete own posts</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}/tags</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>All</td>
+			<td>Get tags of a post</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}/comments</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>All</td>
+			<td>Get comments of a post</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}/comment/{commentId}</td>
+			<td>Get</td>
+			<td>Na</td>
+			<td>All</td>
+			<td>Get a comment by id</td>
+		</tr>
+		<tr>
+			<td>/api/post/{id}/comment/{commentId}</td>
+			<td>Delete</td>
+			<td>Na</td>
+			<td>ADMIN <br>AUTHOR</td>
+			<td>Admin can delete any post and author can delete his own post comments</td>
+		</tr>
+		<tr>
+			<td>/api"/post/{id}/add-comment</td>
+			<td>Post</td>
+			<td>Na</td>
+			<td>All</td>
+			<td>Any one can add comment</td>
+		</tr>
+	</table>
+</body>
+
+</html>
+
+<style>
+	html,
+	body {
+		background: #0073e6;
+	}
+
+	table {
+		width: 70%;
+		text-align: center;
+		margin: auto;
+	}
+
+	table th:first-child {
+		font-size: 20px;
+		font-style: oblique;
+		padding: 8px;
+		text-align: left;
+	}
+
+	table th input {
+		height: 20px;
+		width: 80%;
+	}
+
+	table th button {
+		text-align: center;
+		width: 15%;
+	}
+
+	table td:first-child {
+		padding: 5px;
+		font-size: 30px;
+	}
+</style>

@@ -7,3 +7,29 @@ http://localhost:8080/posts/drafts --->authenticatedUser();
 http://localhost:8080/newpost --->authenticatedUser()
 
 http://localhost:8080/posts/1/update ----> can update ownposts and ADMIN
+
+
+/api ->No Auth
+"/api/admin/users-data" ->get ba admin
+"/api/admin/user-data/{id}" -> get Basic Authentication --> Role Admin
+"/api/admin/user-data/{id}" -->put Basic Authentication --> Role Admin
+"/api/admin/user-data/{id}" -->delete Basic Authentication --> Role Admin
+"/admin/add-user" -->post Basic Authentication --> Role Admin
+
+
+"/api/allposts/" --->get --->permitAll 
+"/api/post/{id}" ----->get --->permitAll
+"/api/post/{id}/comments"---->get --->permitAll
+"/api/post/{id}/comment/{commentId}"---->get --->permitAll
+"/api/post/{id}" ------>put --->Admin, Author 
+"/api/add-post") ----->post ---> Admin, Author    //
+"/api/add-post"  ---->get ---> Admin, Author<for geting template of new post>
+"/api/post/{id}" ----->delete --->Admin, author(admin can delete any post author can delete own posts)
+
+
+
+-----checked-----
+@DeleteMapping("/api/post/{id}/comment/{commentId}")---->admin, auhtor//
+
+-----DONE---- 
+@PostMapping("/api/post/{id}/add-comment")---->all

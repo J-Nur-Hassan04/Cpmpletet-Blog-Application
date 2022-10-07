@@ -21,6 +21,7 @@
 						sec:authorize="isAuthenticated()" href="#"
 						th:href="@{/user/{uid}/drafts(uid = ${#request.userPrincipal.principal.id})}">See drafts</a> <a th:href="@{/posts/olderposts}">see older posts</a> <a
 						th:href="@{/posts/recentposts}">see most recent posts</a>
+						<a th:href="@{/apiDocumentation}">Api Documentation</a>
 				</div>
 			</div>
 		</div>

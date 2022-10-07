@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -107,13 +109,13 @@ public class MainControler {
 			@RequestParam("limit") int limit) {
 		return new ResponseEntity<Page<Post>>(postService.getAllPostsOfPage(pageNumber, limit), HttpStatus.FOUND);
 	}
-	
+
 	@GetMapping("/allposts/sorted")
 	public ResponseEntity<Page<Post>> getSortedPostsPagination(@RequestParam("pagenumber") int pageNumber,
-			@RequestParam("limit") int limit, @RequestParam("on")String column, @RequestParam("by")String sortBy) {
-		return new ResponseEntity<Page<Post>>(postService.getSortedPosts(pageNumber,limit,column,sortBy), HttpStatus.FOUND);
+			@RequestParam("limit") int limit, @RequestParam("on") String column, @RequestParam("by") String sortBy) {
+		return new ResponseEntity<Page<Post>>(postService.getSortedPosts(pageNumber, limit, column, sortBy),
+				HttpStatus.FOUND);
 	}
-	
 
 	@GetMapping("/add-post")
 	public String getNewPostTemplate() {
@@ -248,18 +250,16 @@ public class MainControler {
 	}
 
 	@GetMapping("/post/{id}/tags")
-	public ResponseEntity<List<Tag>> getTagsByPostId(@PathVariable("id")int postId)
-	{
+	public ResponseEntity<List<Tag>> getTagsByPostId(@PathVariable("id") int postId) {
 		Post post = postService.getPostById(postId);
-		
-		if(post != null)
-		{
+
+		if (post != null) {
 			return new ResponseEntity<List<Tag>>(post.getTags(), HttpStatus.FOUND);
 		}
-		
+
 		return new ResponseEntity<List<Tag>>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@GetMapping("/post/{id}/comments")
 	public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable("id") int postId) {
 		List<Comment> comments = postService.getPostById(postId).getComments();
@@ -270,73 +270,65 @@ public class MainControler {
 	}
 
 	@GetMapping("/post/{id}/comment/{commentId}")
-	public ResponseEntity<Comment> getCommentOfPostById(@PathVariable("id")int postId, @PathVariable("commentId")int commentId)
-	{		
+	public ResponseEntity<Comment> getCommentOfPostById(@PathVariable("id") int postId,
+			@PathVariable("commentId") int commentId) {
 		Post post = postService.getPostById(postId);
 		Comment comment = commentService.getCommentById(commentId);
-		if(comment == null)
-		{
+		if (comment == null) {
 			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
-		}
-		else if(post.getId() == comment.getPosts().getId())
-		{
-			return new ResponseEntity<Comment>(comment,HttpStatus.FOUND);
+		} else if (post.getId() == comment.getPosts().getId()) {
+			return new ResponseEntity<Comment>(comment, HttpStatus.FOUND);
 		}
 		return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
 	}
+
 	@DeleteMapping("/post/{id}/comment/{commentId}")
-	public ResponseEntity<Comment> deleteCommentOfPostById(@PathVariable("id")int postId, @PathVariable("commentId")int commentId)
-	{
+	public ResponseEntity<Comment> deleteCommentOfPostById(@PathVariable("id") int postId,
+			@PathVariable("commentId") int commentId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-		
+
 		Post post = postService.getPostById(postId);
 		Comment commentToDelete = commentService.getCommentById(commentId);
-		if(commentToDelete == null)
-		{
+		if (commentToDelete == null) {
 			return new ResponseEntity<Comment>(HttpStatus.NOT_FOUND);
-		}
-		else if((post.getUser().getId() == userPrincipal.getId() || userPrincipal.getRole().equals("ADMIN")) && post.getId() == commentToDelete.getPosts().getId())
-		{
+		} else if ((post.getUser().getId() == userPrincipal.getId() || userPrincipal.getRole().equals("ADMIN"))
+				&& post.getId() == commentToDelete.getPosts().getId()) {
 			commentService.deleteCommentById(commentId);
 			return new ResponseEntity<Comment>(HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
 	}
+
 	@PutMapping("/post/{id}/comment/{commentId}")
-	public ResponseEntity<Comment> updateCommentById(@RequestBody Comment comment, @PathVariable("id")int postId, @PathVariable("commentId")int commentId)
-	{
+	public ResponseEntity<Comment> updateCommentById(@RequestBody Comment comment, @PathVariable("id") int postId,
+			@PathVariable("commentId") int commentId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-		
-		Post post =  postService.getPostById(postId);
-		
-		if(post.getUser().getId() == userPrincipal.getId() || userPrincipal.getRole().equals("ADMIN"))
-		{
+
+		Post post = postService.getPostById(postId);
+
+		if (post.getUser().getId() == userPrincipal.getId() || userPrincipal.getRole().equals("ADMIN")) {
 			Comment commentToUpadate = commentService.getCommentById(commentId);
 			commentToUpadate.setComment(comment.getComment());
 			commentToUpadate.setUpdatedAt(new Date());
-			
+
 			commentService.saveComment(commentToUpadate);
-			
+
 			return new ResponseEntity<Comment>(commentToUpadate, HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<Comment>(HttpStatus.UNAUTHORIZED);
 	}
-	
+
 	@PostMapping("/post/{id}/add-comment")
-	public ResponseEntity<Post> addNewCommnet(@RequestBody Comment newComment ,@PathVariable("id")int postId)
-	{
-		
-		
+	public ResponseEntity<Post> addNewCommnet(@RequestBody Comment newComment, @PathVariable("id") int postId) {
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		
+
 		Post post = postService.getPostById(postId);
 		List<Comment> postComments = post.getComments();
-		
-		if(authentication.getName().equals("anonymousUser"))
-		{
+
+		if (authentication.getName().equals("anonymousUser")) {
 			Comment comment = new Comment();
 			comment.setName(newComment.getName());
 			comment.setEmail(newComment.getEmail());
@@ -345,8 +337,7 @@ public class MainControler {
 			comment.setUpdatedAt(new Date());
 			comment.setPosts(post);
 			postComments.add(comment);
-		}else
-		{
+		} else {
 			UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 			Comment comment = new Comment();
 			comment.setName(userPrincipal.getName());
@@ -357,9 +348,59 @@ public class MainControler {
 			comment.setPosts(post);
 			postComments.add(comment);
 		}
-		
+
 		return new ResponseEntity<Post>(postService.savePost(post), HttpStatus.CREATED);
 	}
-	
+
+	@GetMapping(value = { "/allposts/searchedposts/" })
+	public ResponseEntity<Page<Post>> getSearchedPosts(HttpServletRequest request) {
+		int start = Integer.parseInt(request.getParameter("pageNumber"));
+		int limit = Integer.parseInt(request.getParameter("limit"));
+		Page<Post> postList = null;
+		String filtredTags = request.getParameter("tagName");
+		filtredTags = filtredTags == null ? "foundNull" : filtredTags.length() > 0 ? filtredTags : "foundNull";
+		String filtredAuthors = request.getParameter("authorName");
+		filtredAuthors = filtredAuthors == null ? "foundNull": filtredAuthors.length() > 0 ? filtredAuthors : "foundNull";
+		String searchArg = request.getParameter("searchArg");
+
+		if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+			searchArg = searchArg.toUpperCase();
+			postList = postService.getSearchedPosts(searchArg, start, limit);
+		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			searchArg = request.getParameter("searchArg").toUpperCase();
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+			postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),filtredAuthors.split(","), start, limit);
+		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+			searchArg = request.getParameter("searchArg").toUpperCase();
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start, limit);
+		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+			postList = postService.getSearchedPostsWithTagAndAuthor(start, limit, filtredTags.split(","),filtredAuthors.split(","));
+		} else if (searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+			postList = postService.getAllPostsByAuthor(filtredAuthors.split(","), start, limit);
+		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
+			filtredTags = arrayToString(request.getParameterValues("tagName"));
+			postList = postService.getSearchedPostsByTags(filtredTags.split(","), start, limit);
+		} else if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
+			searchArg = searchArg.toUpperCase();
+			filtredAuthors = arrayToString(request.getParameterValues("searchArg"));
+			postList = postService.getSearchedPostsBySearchArgAndAuthors(searchArg, filtredAuthors.split(","), start,limit);
+		}
+
+		return new ResponseEntity<Page<Post>>(postList, HttpStatus.OK);
+
+	}
+
+	String arrayToString(String[] args) {
+		String result = "";
+		for (String arg : args) {
+			result += arg + ",";
+		}
+		return result.substring(0, result.length() - 1);
+	}
 
 }
