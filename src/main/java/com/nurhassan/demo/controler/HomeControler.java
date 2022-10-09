@@ -1,5 +1,8 @@
 package com.nurhassan.demo.controler;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import com.nurhassan.demo.entities.User;
 import com.nurhassan.demo.service.PostService;
 import com.nurhassan.demo.service.TagService;
 import com.nurhassan.demo.service.UserService;
+import com.nurhassan.demo.specification.PostSpecification;
 
 @Controller
 public class HomeControler {
@@ -28,8 +32,8 @@ public class HomeControler {
 
 	@Autowired
 	private UserService userService;
-	
-	@RequestMapping(value = {"/","/posts"})
+
+	@RequestMapping(value = { "/", "/posts" })
 	public ModelAndView getPages(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		int start = 0;
@@ -59,106 +63,38 @@ public class HomeControler {
 	}
 
 	@RequestMapping(value = { "/posts/searchedposts" }, method = RequestMethod.GET)
-	public ModelAndView getSearchedPosts(HttpServletRequest request) {
+	public ModelAndView getSearchedPosts(@RequestParam(required = false, value = "searchArg") String searchArg,
+			@RequestParam(required = false, value = "tagName") String tags,
+			@RequestParam(required = false, value = "authorName") String authors,
+			@RequestParam(required = false, value = "pageNumber")String pageNumber) {
 		ModelAndView modelAndView = new ModelAndView();
-		int start = 0;
+		modelAndView.addObject("searchArg", searchArg);
+		modelAndView.addObject("tagName", tags);
+		modelAndView.addObject("authorName", authors);
+		
+		
+		
+		int start = (pageNumber == null)? 0 :Integer.parseInt(pageNumber);
 		int limit = 2;
 		Page<Post> postList = null;
-		String filtredTags = request.getParameter("tagName");
-		filtredTags = filtredTags == null ? "foundNull" : filtredTags.length() > 0 ? filtredTags : "foundNull";
-		String filtredAuthors = request.getParameter("authorName");
-		filtredAuthors = filtredAuthors == null ? "foundNull"
-				: filtredAuthors.length() > 0 ? filtredAuthors : "foundNull";
-		String searchArg = request.getParameter("searchArg");
 
-		if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
-			searchArg = searchArg.toUpperCase();
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPosts(searchArg, start, limit);
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPosts(searchArg, start, limit);
-			}
-		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-			searchArg = request.getParameter("searchArg").toUpperCase();
-			filtredTags = arrayToString(request.getParameterValues("tagName"));
-			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
-						filtredAuthors.split(","), start, limit);
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
-						filtredAuthors.split(","), start, limit);
-			}
-		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
-			searchArg = request.getParameter("searchArg").toUpperCase();
-			filtredTags = arrayToString(request.getParameterValues("tagName"));
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start,
-						limit);
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start,
-						limit);
-			}
+		searchArg = (searchArg == null)? null : (searchArg.length() < 1)?null: searchArg.toUpperCase();
+		tags = (tags == null)? null : (tags.length() < 1)? null : tags;
+		authors = (authors == null )? null : (authors.length() < 1)?null : authors;
+		
+		List<String> filtredTags = null;
+		filtredTags = (tags == null)? null : Arrays.asList(tags.split(","));
+		
+		List<String> filtredAuthors = null;
+		filtredAuthors = (authors == null)? null : Arrays.asList(authors.split(","));
+		
 
-		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-			filtredTags = arrayToString(request.getParameterValues("tagName"));
-			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
+		postList = postService.getSearchAndFilterResult(PostSpecification.findSearchAndFiltredResult(searchArg, filtredAuthors, filtredTags), start, limit);
 
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPostsWithTagAndAuthor(start, limit, filtredTags.split(","),
-						filtredAuthors.split(","));
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPostsWithTagAndAuthor(start, limit, filtredTags.split(","),
-						filtredAuthors.split(","));
-
-			}
-		} else if (searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getAllPostsByAuthor(filtredAuthors.split(","), start, limit);
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getAllPostsByAuthor(filtredAuthors.split(","), start, limit);
-			}
-		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
-			filtredTags = arrayToString(request.getParameterValues("tagName"));
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPostsByTags(filtredTags.split(","), start, limit);
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPostsByTags(filtredTags.split(","), start, limit);
-			}
-
-		} else if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-			searchArg = searchArg.toUpperCase();
-			filtredAuthors = arrayToString(request.getParameterValues("searchArg"));
-			if (request.getParameter("pageNumber") == null) {
-				postList = postService.getSearchedPostsBySearchArgAndAuthors(searchArg, filtredAuthors.split(","),
-						start, limit);
-			}
-			if (request.getParameter("pageNumber") != null) {
-				start = Integer.parseInt(request.getParameter("pageNumber"));
-				postList = postService.getSearchedPostsBySearchArgAndAuthors(searchArg, filtredAuthors.split(","),
-						start, limit);
-			}
-		}
 		modelAndView.addObject("authorList", postService.getAllAuthor());
 		modelAndView.addObject("tagsList", tagService.getAlltag());
-		modelAndView.addObject("searchArg", searchArg);
 		modelAndView.addObject("limit", limit);
 		modelAndView.setViewName("searchresultpage");
-		modelAndView.addObject("tagName", filtredTags);
-		modelAndView.addObject("authorName", filtredAuthors);
 		modelAndView.addObject("postList", postList);
 		modelAndView.addObject("pageNumber", start);
 		modelAndView.addObject("totalPages", postList.getTotalPages());
@@ -187,9 +123,9 @@ public class HomeControler {
 	}
 
 	@RequestMapping(value = { "/user/{uid}/drafts" }, method = RequestMethod.GET)
-	public ModelAndView getDrafts(@PathVariable("uid")int userId) {
+	public ModelAndView getDrafts(@PathVariable("uid") int userId) {
 		ModelAndView modelAndView = new ModelAndView();
-		
+
 		modelAndView.addObject("postList", postService.getDraftsOfUser(userId));
 		modelAndView.setViewName("draftspage");
 
@@ -259,34 +195,30 @@ public class HomeControler {
 
 		return modelAndView;
 	}
-	
-	@RequestMapping(value = {"/singup/adduser"}, method = RequestMethod.POST)
-	public ModelAndView addUser(User user)
-	{	
+
+	@RequestMapping(value = { "/singup/adduser" }, method = RequestMethod.POST)
+	public ModelAndView addUser(User user) {
 		User newUser = new User();
 		newUser.setName(user.getName());
 		newUser.setEmail(user.getEmail());
 		newUser.setPassword(user.getPassword());
 		newUser.setRole("AUTHOR");
 		userService.saveOrUpdateUserDetails(newUser);
-	
+
 		return new ModelAndView("redirect:/");
 	}
-	
-	@RequestMapping(value = {"/apiDocumentation"}, method = RequestMethod.GET)
-	public String getApiDocumentation()
-	{
+
+	@RequestMapping(value = { "/apiDocumentation" }, method = RequestMethod.GET)
+	public String getApiDocumentation() {
 		return "documentation";
 	}
-	
+
 	@RequestMapping("/getApiData")
-	public ModelAndView documentationFeature(@RequestParam("requestedUrl")String requestedUrl)
-	{
-		if(requestedUrl.isEmpty())
-		{
+	public ModelAndView documentationFeature(@RequestParam("requestedUrl") String requestedUrl) {
+		if (requestedUrl.isEmpty()) {
 			return new ModelAndView("redirect:/apiDocumentation");
 		}
-		return new ModelAndView("redirect:"+requestedUrl);
+		return new ModelAndView("redirect:" + requestedUrl);
 	}
-	
+
 }

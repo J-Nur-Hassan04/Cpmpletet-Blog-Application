@@ -26,7 +26,7 @@ public class Comment {
 
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Post posts;
+	private Post post;
 
 	public int getId() {
 		return id;
@@ -76,12 +76,12 @@ public class Comment {
 		this.updatedAt = updatedAt;
 	}
 
-	public Post getPosts() {
-		return posts;
+	public Post getPost() {
+		return post;
 	}
 
-	public void setPosts(Post posts) {
-		this.posts = posts;
+	public void setPost(Post post) {
+		this.post = post;
 	}
 
 }

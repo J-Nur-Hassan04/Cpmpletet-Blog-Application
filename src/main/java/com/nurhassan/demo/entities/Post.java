@@ -43,7 +43,7 @@ public class Post {
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
 	private List<Tag> tags = new ArrayList<>();
 
-	@OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
 
 	@JsonBackReference

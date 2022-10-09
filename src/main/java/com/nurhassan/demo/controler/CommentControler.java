@@ -36,7 +36,7 @@ public class CommentControler {
 		newComment.setComment(comment);
 		newComment.setCreatedAt(new Date());
 		newComment.setUpdatedAt(new Date());
-		newComment.setPosts(post);
+		newComment.setPost(post);
 		post.getComments().add(newComment);
 
 		postService.savePost(post);

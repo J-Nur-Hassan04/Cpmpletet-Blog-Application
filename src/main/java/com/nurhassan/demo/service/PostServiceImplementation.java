@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.nurhassan.demo.entities.Post;
@@ -43,14 +44,6 @@ public class PostServiceImplementation implements PostService {
 	}
 
 	@Override
-	public Page<Post> getSearchedPosts(String searchArg, int start, int limit) {
-
-		Page<Post> posts = postRepository.searchedPosts(searchArg, PageRequest.of(start, limit));
-
-		return posts;
-	}
-
-	@Override
 	public List<String> getAllAuthor() {
 		List<String> authors = postRepository.getAllAuthors();
 		return authors;
@@ -76,47 +69,14 @@ public class PostServiceImplementation implements PostService {
 	}
 
 	@Override
-	public Page<Post> getSearchedPostsWithTagAndAuthor(int start, int limit, String[] tags, String[] authors) {
-		Page<Post> posts = postRepository.searchedPostsWithTagAuthors(tags, authors, PageRequest.of(start, limit));
-		return posts;
-	}
-
-	@Override
-	public Page<Post> getSearchedPostsWithSearchArgTagAuthors(String searchArg, String[] tags, String[] authors,
-			int start, int limit) {
-		Page<Post> posts = postRepository.searchedPostsWithSearchArgTagAuthors(searchArg, tags, authors,
-				PageRequest.of(start, limit));
-		return posts;
-	}
-
-	@Override
-	public Page<Post> getSearchedPostWithSearchArgAndTags(String searchArg, String[] tags, int start, int limit) {
-		Page<Post> posts = postRepository.seacchedPostSearchArgAndTags(searchArg, tags, PageRequest.of(start, limit));
-		return posts;
-	}
-
-	@Override
-	public Page<Post> getAllPostsByAuthor(String[] author, int start, int limit) {
-		Page<Post> posts = postRepository.searchedPostsByAuthors(author, PageRequest.of(start, limit));
-		return posts;
-	}
-
-	@Override
-	public Page<Post> getSearchedPostsByTags(String[] tags, int start, int limit) {
-		Page<Post> posts = postRepository.searchedPostsByTags(tags, PageRequest.of(start, limit));
-		return posts;
-	}
-
-	@Override
-	public Page<Post> getSearchedPostsBySearchArgAndAuthors(String searchArg, String[] authors, int start, int limit) {
-		Page<Post> posts = postRepository.searchedPostsBySearchArgAndAuthors(searchArg, authors,
-				PageRequest.of(start, limit));
-		return posts;
-	}
-
-	@Override
 	public List<Post> getDraftsOfUser(int id) {
 		List<Post> posts = postRepository.findDraftsByUId(id);
+		return posts;
+	}
+
+	@Override
+	public Page<Post> getSearchAndFilterResult(Specification<Post> specification, int start, int limit) {
+		Page<Post> posts = postRepository.findAll(specification, PageRequest.of(start, limit));
 		return posts;
 	}
 
