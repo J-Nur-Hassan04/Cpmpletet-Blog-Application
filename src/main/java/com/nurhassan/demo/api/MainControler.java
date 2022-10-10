@@ -369,7 +369,7 @@ public class MainControler {
 		
 		
 		
-		int start = (pageNumber == null)? 0 :Integer.parseInt(pageNumber);
+		int start = (pageNumber == null)? 0 :(pageNumber.length() < 1) ? 0 :Integer.parseInt(pageNumber);
 		int limit = 2;
 		Page<Post> postList = null;
 
