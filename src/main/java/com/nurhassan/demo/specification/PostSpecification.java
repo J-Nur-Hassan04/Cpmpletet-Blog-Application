@@ -24,6 +24,12 @@ public class PostSpecification implements Specification<Post> {
 		return null;
 	}
 
+	public static Specification<Post> getPublishedPost() {
+		return (root, query, criteriaBuilder) -> {
+			return criteriaBuilder.equal(root.<Boolean>get("isPublished"), true);
+		};
+	}
+
 	public static Specification<Post> getBySearchArg(String searchArg) {
 		return (root, query, criteriaBuilder) -> {
 			query.distinct(true);
@@ -66,9 +72,10 @@ public class PostSpecification implements Specification<Post> {
 			return postTags.<String>get("name").in(tags);
 		};
 	}
+	
 
 	public static Specification<Post> findSearchAndFiltredResult(String search, List<String> authorsName, List<String> tags) {
-		return getBySearchArg(search).and(getByAuthor(authorsName)).and(getByTags(tags));
+		return   getPublishedPost().and(getBySearchArg(search)).and(getByAuthor(authorsName)).and(getByTags(tags));
 	}
 
 }
