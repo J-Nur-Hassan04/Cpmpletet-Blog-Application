@@ -1,10 +1,12 @@
 package com.nurhassan.demo.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import com.nurhassan.demo.service.CommentService;
 import com.nurhassan.demo.service.PostService;
 import com.nurhassan.demo.service.TagService;
 import com.nurhassan.demo.service.UserService;
+import com.nurhassan.demo.specification.PostSpecification;
 
 @RestController
 @RequestMapping("/api")
@@ -357,52 +360,36 @@ public class MainControler {
 		return new ResponseEntity<Post>(postService.savePost(post), HttpStatus.CREATED);
 	}
 
-//	@GetMapping(value = { "/allposts/searchedposts/" })
-//	public ResponseEntity<List<Post>> getSearchedPosts(HttpServletRequest request) {
-//		int start = Integer.parseInt(request.getParameter("pageNumber"));
-//		int limit = Integer.parseInt(request.getParameter("limit"));
-//		List<Post> postList = null;
-//		String filtredTags = request.getParameter("tagName");
-//		filtredTags = filtredTags == null ? "foundNull" : filtredTags.length() > 0 ? filtredTags : "foundNull";
-//		String filtredAuthors = request.getParameter("authorName");
-//		filtredAuthors = filtredAuthors == null ? "foundNull"
-//				: filtredAuthors.length() > 0 ? filtredAuthors : "foundNull";
-//		String searchArg = request.getParameter("searchArg");
-//
-//		if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
-//			searchArg = searchArg.toUpperCase();
-//			postList = postService.getSearchedPosts(searchArg, start, limit).getContent();
-//		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-//			searchArg = request.getParameter("searchArg").toUpperCase();
-//			filtredTags = arrayToString(request.getParameterValues("tagName"));
-//			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
-//			postList = postService.getSearchedPostsWithSearchArgTagAuthors(searchArg, filtredTags.split(","),
-//					filtredAuthors.split(","), start, limit).getContent();
-//		} else if (!searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
-//			searchArg = request.getParameter("searchArg").toUpperCase();
-//			filtredTags = arrayToString(request.getParameterValues("tagName"));
-//			postList = postService.getSearchedPostWithSearchArgAndTags(searchArg, filtredTags.split(","), start, limit).getContent();
-//		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-//			filtredTags = arrayToString(request.getParameterValues("tagName"));
-//			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
-//			postList = postService.getSearchedPostsWithTagAndAuthor(start, limit, filtredTags.split(","),
-//					filtredAuthors.split(",")).getContent();
-//		} else if (searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-//			filtredAuthors = arrayToString(request.getParameterValues("authorName"));
-//			postList = postService.getAllPostsByAuthor(filtredAuthors.split(","), start, limit).getContent();
-//		} else if (searchArg.isEmpty() && !filtredTags.equals("foundNull") && filtredAuthors.equals("foundNull")) {
-//			filtredTags = arrayToString(request.getParameterValues("tagName"));
-//			postList = postService.getSearchedPostsByTags(filtredTags.split(","), start, limit).getContent();
-//		} else if (!searchArg.isEmpty() && filtredTags.equals("foundNull") && !filtredAuthors.equals("foundNull")) {
-//			searchArg = searchArg.toUpperCase();
-//			filtredAuthors = arrayToString(request.getParameterValues("searchArg"));
-//			postList = postService.getSearchedPostsBySearchArgAndAuthors(searchArg, filtredAuthors.split(","), start,
-//					limit).getContent();
-//		}
-//
-//		return new ResponseEntity<List<Post>>(postList, HttpStatus.OK);
-//
-//	}
+	@GetMapping(value = { "/allposts/searchedposts/" })
+	public ResponseEntity<List<Post>> getSearchedPosts(@RequestParam(required = false, value = "searchArg") String searchArg,
+			@RequestParam(required = false, value = "tagName") String tags,
+			@RequestParam(required = false, value = "authorName") String authors,
+			@RequestParam(required = false, value = "pageNumber")String pageNumber) {
+		
+		
+		
+		
+		int start = (pageNumber == null)? 0 :Integer.parseInt(pageNumber);
+		int limit = 2;
+		Page<Post> postList = null;
+
+		searchArg = (searchArg == null)? null : (searchArg.length() < 1)?null: searchArg.toUpperCase();
+		tags = (tags == null)? null : (tags.length() < 1)? null : tags;
+		authors = (authors == null )? null : (authors.length() < 1)?null : authors;
+		
+		List<String> filtredTags = null;
+		filtredTags = (tags == null)? null : Arrays.asList(tags.split(","));
+		
+		List<String> filtredAuthors = null;
+		filtredAuthors = (authors == null)? null : Arrays.asList(authors.split(","));
+		
+
+		postList = postService.getSearchAndFilterResult(PostSpecification.findSearchAndFiltredResult(searchArg, filtredAuthors, filtredTags), start, limit);
+
+	
+		return new ResponseEntity<List<Post>>(postList.getContent(), HttpStatus.OK);
+
+	}
 
 	String arrayToString(String[] args) {
 		String result = "";
