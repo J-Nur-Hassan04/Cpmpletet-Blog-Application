@@ -208,7 +208,6 @@ public class MainControler {
 				} else {
 					tags.add(presentTag);
 				}
-
 			}
 
 			post.setTags(tags);
